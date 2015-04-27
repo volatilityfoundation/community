@@ -29,6 +29,7 @@ import volatility.plugins.common as common
 import volatility.commands as commands
 import volatility.win32.tasks as tasks
 import volatility.plugins.taskmods as taskmods
+from volatility.renderers import TreeGrid
 
 #Plugin name vmconnect
 class hpv_vmconnect(taskmods.DllList):  
@@ -45,9 +46,9 @@ class hpv_vmconnect(taskmods.DllList):
                 outfd.write("PPID               : {0}\n".format(str(task.InheritedFromUniqueProcessId)))
                 outfd.write("PID                : {0}\n".format(str(task.UniqueProcessId)))
                 outfd.write("Create Time        : {0}\n".format(str(task.CreateTime)))
-                #Process AS must be valid
+                # Process AS must be valid
                 process_space = task.get_process_address_space()
-                #Virtual Machine connect vmconnect.exe
+                # Virtual Machine connect vmconnect.exe
                 vmcusername=[("USERNAME=".encode("utf_16le"))]
                 vmcuserdomain=[("USERDOMAIN=".encode("utf_16le"))]
                 computername=[("COMPUTERNAME=".encode("utf_16le"))]
@@ -84,7 +85,7 @@ class hpv_vmconnect(taskmods.DllList):
                     if vmcud.is_valid():
                         vmcudomain = str(vmcud)
                         vmconnectuserdomain = vmcudomain[11:]
-                #Last value in the process so include double space
+                # Last value in the process so include double space
                 outfd.write("User Domain Name   : {0}\n".format(str(vmconnectuserdomain)))
 
                 for address in task.search_process_memory(connectedvmguid):
@@ -105,16 +106,16 @@ class hpv_clipboard(taskmods.DllList):
     def render_text(self, outfd, data):
         # basically the "data" that render_text receives is whatever the plugin's calculate() function yields or returns
         # and in this case Dlllist.calculate() yields a list of processes
-        # so Dlllist.calculate() already takes care of creating the address space and filtering the list processes based on
-        #  -p PID, -o OFFSET, or whatever
+        # so Dlllist.calculate() already takes care of creating the address space and filtering the list processes based
+        # on -p PID, -o OFFSET, or whatever
         for task in data:
             if str(task.ImageFileName).lower() == "vmconnect.exe":
                 # Each individual task creates its own array for its values
                 outfd.write("Process : {0}".format(str(task.ImageFileName)))
                 outfd.write("   PID : {0}\n".format(str(task.UniqueProcessId)))
-            #Process AS must be valid
+            # Process AS must be valid
             process_space = task.get_process_address_space()
-            #Virtual Machine connect vmconnect.exe
+            # Virtual Machine connect vmconnect.exe
             clipboardvalue = [("Simulating typing".encode("utf_16le"))]
             for address in task.search_process_memory(clipboardvalue):
                 cpbs = obj.Object("String",
@@ -129,16 +130,61 @@ class hpv_clipboard(taskmods.DllList):
 
 #Plugin name hpv_vmwp
 class hpv_vmwp(taskmods.DllList):      
-    """Display the Virtual Machine Process GUID for each running vm"""    
+    """Display the Virtual Machine Process GUID for each running vm"""
+    def unified_output(self, data):
+        return TreeGrid([("Name", str),
+                        ("PID", int),
+                        ("PPID", int),
+                        ("Create Time", str),
+                        ("GUID", str)
+                        ],
+                        self.generator(data))
+    def generator(self,data):
+        for task in data:
+            # Check for the virtual machin worker process vmwp.exe
+            if str(task.ImageFileName).lower() == "vmwp.exe":
+                # Create a dic to store data for output format
+                records = {}
+                newVmwp = {}
+                newVmwp['Name'] = str(task.ImageFileName)
+                newVmwp['PID'] = str(task.UniqueProcessId)
+                newVmwp['PPID'] = str(task.InheritedFromUniqueProcessId)
+                newVmwp['Create Time'] = str(task.CreateTime or '')
+                newVmwp['GUID'] = ""
+                # Process AS must be valid
+                process_space = task.get_process_address_space()
+                # Find Virtual Machine GUID In the vmwp.exe process
+                ntvmname=[("NT VIRTUAL MACHINE".encode("utf_16le"))]
+                for address in task.search_process_memory(ntvmname):
+                    vmn = obj.Object("String",
+                                     offset = address,
+                                     vm = process_space,
+                                     encoding = "utf16",
+                                     length = 128)
+                    # Apply string sanity checks for a valid string
+                    if vmn.is_valid():
+                        vmguid = str(vmn)
+                        # Get rid of NT VIRTUAL MACHINE text
+                        vmwpguid = vmguid[-36:]
+                        newVmwp['GUID'] = vmwpguid
+
+                # Print out Virtual Machine Worker Process information plus the identified GUID
+                yield(0, [str(newVmwp['Name']),
+                          int(newVmwp['PID']),
+                          int(newVmwp['PPID']),
+                          str(newVmwp['Create Time']),
+                          str(newVmwp['GUID']),
+                          ])
+
     def render_text(self, outfd, data):
-    #Create table header early so users know its running
+        # Create table header early so users know its running
         self.table_header(outfd, [("Name", "16"),
                                   ("PID", "6"),
                                   ("PPID", "6"),
                                   ("Create Time", "30"),
                                   ("GUID", "40")])
         # basically the "data" that render_text receives is whatever the plugin's calculate() function yields or returns
-	    # and in this case Dlllist.calculate() yields a list of processes
+        #  and in this case Dlllist.calculate() yields a list of processes
         # so Dlllist.calculate() already takes care of creating the address space and filtering the list
         # processes based on -p PID, -o OFFSET, or whatever ~ mhl
         for task in data:
@@ -155,7 +201,7 @@ class hpv_vmwp(taskmods.DllList):
                 # Process AS must be valid
                 process_space = task.get_process_address_space()
                 # Find Virtual Machine GUID In the vmwp.exe process
-            	ntvmname=[("NT VIRTUAL MACHINE".encode("utf_16le"))]
+                ntvmname=[("NT VIRTUAL MACHINE".encode("utf_16le"))]
                 for address in task.search_process_memory(ntvmname):
                     vmn = obj.Object("String",
                                      offset = address,
