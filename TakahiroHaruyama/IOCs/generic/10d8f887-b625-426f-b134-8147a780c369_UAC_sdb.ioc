@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="10d8f887-b625-426f-b134-8147a780c369" last-modified="2015-02-26T06:11:39" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>UAC pop-up bypass (COM)</short_description>
+    <description>push    10840014h       ; (FOF_NOCONFIRMATION|FOF_SILENT|FOFX_SHOWELEVATIONPROMPT|FOFX_NOCOPYHOOKS|FOFX_REQUIREELEVATION|FOF_NOERRORUI)</description>
+    <authored_by>Takahiro Haruyama</authored_by>
+    <authored_date>2015-02-26T06:10:23</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="2aaad842-4d2e-4f79-8ea8-50f170f2130b" operator="OR"><IndicatorItem id="5efc4f13-b33c-4ddc-a65b-bb019ad63281" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x68\x14\x00\x84\x10</Content>
+        </IndicatorItem>
+      </Indicator>
+  </criteria>
+  <parameters/>
+</OpenIOC>

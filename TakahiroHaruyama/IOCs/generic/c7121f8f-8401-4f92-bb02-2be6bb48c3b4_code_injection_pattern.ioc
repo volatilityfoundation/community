@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="c7121f8f-8401-4f92-bb02-2be6bb48c3b4" last-modified="2015-06-29T07:44:53" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>process code injection (based on hex pattern)</short_description>
+    <description/>
+    <authored_by>Takahiro Haruyama</authored_by>
+    <authored_date>2015-02-26T03:46:35</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="5ddeb00b-8c11-4048-be50-49fa3ff0da52" operator="OR">
+      <IndicatorItem id="27110157-d678-47ac-a024-1c9429fcd63b" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/InjectedHexPattern" type="volatility"/>
+          <Content type="string">\x64\xA1\x30\x00\x00\x00\x8B\x40\x0C</Content>
+        </IndicatorItem>
+      <IndicatorItem id="a6381a00-d720-44d5-98ef-99bf551625ef" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/InjectedHexPattern" type="volatility"/>
+          <Content type="string">\x64\x8B.\x30\x8B.\x0C\x8B</Content>
+        </IndicatorItem>
+      <IndicatorItem id="7d868c20-8b4a-4fe9-a908-64c674af1b67" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/InjectedHexPattern" type="volatility"/>
+          <Content type="string">\xE8\x00\x00\x00\x00[\x5D\x5E\x58]</Content>
+        </IndicatorItem>
+      <Indicator id="13101537-b3d3-4764-b8ff-e73a01963e3d" operator="AND"><IndicatorItem preserve-case="false" negate="false" id="f326bcd5-3040-4e9c-9829-e36b2735f6ea" condition="matches">
+        <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/InjectedHexPattern" type="volatility"/>
+        <Content type="string">\x4d\x5a</Content>
+      </IndicatorItem>
+      <IndicatorItem preserve-case="false" negate="false" id="c049d593-7b95-418a-a4d1-80dbd436d8f7" condition="matches">
+        <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/InjectedHexPattern" type="volatility"/>
+        <Content type="string">\x50\x45</Content>
+      </IndicatorItem>
+      </Indicator><IndicatorItem preserve-case="false" negate="false" id="37293dc4-b03e-4d42-9a37-565b21c57fb6" condition="matches">
+        <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/InjectedHexPattern" type="volatility"/>
+        <Content type="string">\xff[\x56\x96]</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters>
+    <param id="1bbdfb32-8605-4e80-b2da-bb51db127863" ref-id="f326bcd5-3040-4e9c-9829-e36b2735f6ea" name="note">
+      <value type="string">MZ signature</value>
+    </param>
+    <param id="cc82613e-7386-4f67-af6e-e14913606a41" ref-id="37293dc4-b03e-4d42-9a37-565b21c57fb6" name="note">
+      <value type="string">PIC code (call [ESI+?])</value>
+    </param>
+  <param id="2b074866-6f55-4b75-84ef-4c249403d6de" ref-id="27110157-d678-47ac-a024-1c9429fcd63b" name="note"><value type="string">PIC code(PEB#1)</value></param><param id="b62ad8c3-99b6-400c-936d-5296c9022b1e" ref-id="a6381a00-d720-44d5-98ef-99bf551625ef" name="note"><value type="string">PIC code(PEB#2)</value></param><param id="c82068f1-937c-4a25-badc-495c8dc859da" ref-id="7d868c20-8b4a-4fe9-a908-64c674af1b67" name="note"><value type="string">PIC code(getPC)</value></param><param id="146d7d96-5a44-4ee7-aa2b-1803fae1d107" ref-id="c049d593-7b95-418a-a4d1-80dbd436d8f7" name="note"><value type="string">PE signature</value></param></parameters>
+</OpenIOC>

@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="7382c170-7e66-4d72-808e-5f703f39a38d" last-modified="2015-02-27T06:08:42" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>suspicious paths (running)</short_description>
+    <description>based on Iron man method: http://journeyintoir.blogspot.jp/2013/07/finding-malware-like-iron-man-slide.html</description>
+    <authored_date>2014-07-21T14:11:00Z</authored_date>
+    <links/>
+  <authored_by>Takahiro Haruyama</authored_by></metadata>
+  <criteria>
+    <Indicator operator="OR" id="2f8f9381-1c10-4962-9bff-4c748249a0fd">
+      <Indicator operator="OR" id="362f84b0-2d42-4edb-bbe0-931c0c3369fb">
+        <IndicatorItem id="2bb4416e-f0c1-468b-a68e-3339b9d828e5" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/cmdLine" type="volatility"/>
+          <Content type="string">\ProgramData</Content>
+        </IndicatorItem>
+        <IndicatorItem id="f891d621-beed-4667-bac5-c02d7d5ab3f0" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/cmdLine" type="volatility"/>
+          <Content type="string">\$Recycle.Bin</Content>
+        </IndicatorItem>
+        <IndicatorItem id="43d36e47-cb1b-49ac-8516-6cca256bf86d" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/cmdLine" type="volatility"/>
+          <Content type="string">\Windows\Temp</Content>
+        </IndicatorItem>
+        <IndicatorItem id="1934d332-53d4-4e6f-83cc-e1e90ebcefd8" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/cmdLine" type="volatility"/>
+          <Content type="string">\Users\All Users</Content>
+        </IndicatorItem>
+        <IndicatorItem id="c8a186d5-bbab-45df-bc94-7676dbcfbdc1" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/cmdLine" type="volatility"/>
+          <Content type="string">\Users\Default</Content>
+        </IndicatorItem>
+        <IndicatorItem id="028d8ee5-f356-4982-8d62-e82198aca925" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/cmdLine" type="volatility"/>
+          <Content type="string">\Users\Public</Content>
+        </IndicatorItem>
+        <IndicatorItem id="76d1903f-eef6-47d5-9449-4d9f674d83f2" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/cmdLine" type="volatility"/>
+          <Content type="string">\\Users\\.*\\AppData</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator operator="OR" id="5ca8a1ef-c758-48d1-827f-f4aa52a5e9ca">
+        <IndicatorItem id="a32577eb-3430-4bdb-9236-e36effbfd477" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/DllPath" type="volatility"/>
+          <Content type="string">\ProgramData</Content>
+        </IndicatorItem>
+        <IndicatorItem id="72976fb9-35bc-43f1-851a-bfddcab262ec" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/DllPath" type="volatility"/>
+          <Content type="string">\$Recycle.Bin</Content>
+        </IndicatorItem>
+        <IndicatorItem id="5235734c-0636-490f-8e16-4220f7bb6bfc" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/DllPath" type="volatility"/>
+          <Content type="string">\Windows\Temp</Content>
+        </IndicatorItem>
+        <IndicatorItem id="59162e67-23e5-41c1-94f5-b9ada778b2a6" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/DllPath" type="volatility"/>
+          <Content type="string">\Users\All Users</Content>
+        </IndicatorItem>
+        <IndicatorItem id="5980c71a-5f08-4418-bcfa-3845c6bde17e" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/DllPath" type="volatility"/>
+          <Content type="string">\Users\Default</Content>
+        </IndicatorItem>
+        <IndicatorItem id="9bd69361-a7a2-46d4-9178-577cdb2635ed" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/DllPath" type="volatility"/>
+          <Content type="string">\Users\Public</Content>
+        </IndicatorItem>
+        <IndicatorItem id="89b09430-aebd-401c-a34c-71b18ac168fc" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/DllPath" type="volatility"/>
+          <Content type="string">\\Users\\.*\\AppData</Content>
+        </IndicatorItem>
+        <IndicatorItem id="13a850ec-b4b4-42ba-bc30-65a443a12308" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/DllPath" type="volatility"/>
+          <Content type="string"></Content>
+        </IndicatorItem>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters><param id="8cc9c445-af5f-441f-9fac-b2d29e9720a3" ref-id="2bb4416e-f0c1-468b-a68e-3339b9d828e5" name="detail"><value type="string">on</value></param><param id="59c8cf2f-bcff-4598-b7d4-1215956a32b6" ref-id="f891d621-beed-4667-bac5-c02d7d5ab3f0" name="detail"><value type="string">on</value></param><param id="4484187f-d08f-4114-8547-568001af06ff" ref-id="43d36e47-cb1b-49ac-8516-6cca256bf86d" name="detail"><value type="string">on</value></param><param id="e31b7f54-d8bf-4214-bd9b-aed8eb9d477e" ref-id="1934d332-53d4-4e6f-83cc-e1e90ebcefd8" name="detail"><value type="string">on</value></param><param id="0d08a823-ca08-440a-a1aa-0bb458aad1cc" ref-id="c8a186d5-bbab-45df-bc94-7676dbcfbdc1" name="detail"><value type="string">on</value></param><param id="2b382db4-7c26-4a98-a0c4-0bf851d01a3c" ref-id="028d8ee5-f356-4982-8d62-e82198aca925" name="detail"><value type="string">on</value></param><param id="03eae362-b264-41c9-a00a-ac0d24698995" ref-id="76d1903f-eef6-47d5-9449-4d9f674d83f2" name="detail"><value type="string">on</value></param><param id="52c541b1-7226-4b8d-ba7b-f61de1fe1982" ref-id="a32577eb-3430-4bdb-9236-e36effbfd477" name="detail"><value type="string">on</value></param><param id="b7f03d0a-8c70-4df1-8e5e-106d91f38cc1" ref-id="72976fb9-35bc-43f1-851a-bfddcab262ec" name="detail"><value type="string">on</value></param><param id="92eb4acd-dfec-4f1b-a681-0ef18a202685" ref-id="5235734c-0636-490f-8e16-4220f7bb6bfc" name="detail"><value type="string">on</value></param><param id="d1aafc35-e26a-4f29-8b18-738c26cca1c8" ref-id="59162e67-23e5-41c1-94f5-b9ada778b2a6" name="detail"><value type="string">on</value></param><param id="cf7dfdc1-e007-4c33-813f-c77f4eeaa633" ref-id="5980c71a-5f08-4418-bcfa-3845c6bde17e" name="detail"><value type="string">on</value></param><param id="58da7302-fee2-4ae0-b384-003f0fc8a30b" ref-id="9bd69361-a7a2-46d4-9178-577cdb2635ed" name="detail"><value type="string">on</value></param><param id="fa8732bd-8920-4d3a-9d27-f3cb60cd9191" ref-id="89b09430-aebd-401c-a34c-71b18ac168fc" name="detail"><value type="string">on</value></param></parameters>
+</OpenIOC>

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="e5f73cf8-55ed-463f-81ec-70ffaf81ade9" last-modified="2015-02-26T12:59:25" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>LSASS check</short_description>
+    <description>[v] ImagePath: %SystemRoot%\System32\lsass.exe (defaulting %SystemRoot% to "C:\Windows")
+[v] Parent Process: wininit.exe or winlogon.exe (xp)
+[~] Check for similar names (just a try...)
+</description>
+    <authored_by>Francesco "dfirfpi" Picasso</authored_by>
+    <authored_date>2015-02-12T15:57:37</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="3dffb1f9-3bac-4cd4-9f63-23c0d6d3ebc4" operator="OR">
+      <Indicator id="160bc86c-0f41-46db-95f8-b4b4fe16b235" operator="AND">
+        <IndicatorItem preserve-case="false" negate="false" id="65a71b46-eb50-459b-8903-d3fc3677760f" condition="is">
+          <Context document="ProcessItem" search="ProcessItem/name" type="volatility"/>
+          <Content type="string">lsass.exe</Content>
+        </IndicatorItem>
+        <Indicator id="eb989252-155f-4878-8133-7ddc1e0474b8" operator="OR">
+          <Indicator id="e025f1c1-8f34-45f6-96f6-5ec572fa6557" operator="AND">
+            <IndicatorItem preserve-case="false" negate="true" id="720cfab2-fb78-414c-a31e-132c8ffd765f" condition="is">
+              <Context document="ProcessItem" search="ProcessItem/ParentProcessName" type="volatility"/>
+              <Content type="string">winlogon.exe</Content>
+            </IndicatorItem>
+            <IndicatorItem preserve-case="false" negate="true" id="28e69b9d-7db8-4a51-8f8f-dc3a879ff208" condition="is">
+              <Context document="ProcessItem" search="ProcessItem/ParentProcessName" type="volatility"/>
+              <Content type="string">wininit.exe</Content>
+            </IndicatorItem>
+          </Indicator>
+          <IndicatorItem preserve-case="false" negate="true" id="b1bd12b8-35ea-4277-acef-8abc66e8c43c" condition="is">
+            <Context document="ProcessItem" search="ProcessItem/cmdLine" type="volatility"/>
+            <Content type="string">c:\windows\system32\lsass.exe</Content>
+          </IndicatorItem>
+        </Indicator>
+      </Indicator>
+      <Indicator id="01fe6b0c-6e3c-4aad-9e6c-351918cd44b9" operator="AND">
+        <IndicatorItem preserve-case="false" negate="false" id="66530bf8-c32c-4722-a68b-1c9d90b24655" condition="contains">
+          <Context document="ProcessItem" search="ProcessItem/name" type="volatility"/>
+          <Content type="string">lsa</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="true" id="89740af8-8f7f-4da8-a818-4b3a2924ac8d" condition="is">
+          <Context document="ProcessItem" search="ProcessItem/name" type="volatility"/>
+          <Content type="string">lsass.exe</Content>
+        </IndicatorItem>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters>
+    <param id="1925804c-011c-4fcd-b82d-aa22aa2e4baa" ref-id="edef5c49-8294-47d9-994b-e72c703956ee" name="score">
+      <value type="integer">100</value>
+    </param>
+    <param id="06bc35ec-8c52-4b0a-8a74-d94b9b112270" ref-id="f098a46d-a7c5-49e6-8b75-41a0b2179486" name="score">
+      <value type="integer">50</value>
+    </param>
+  </parameters>
+</OpenIOC>

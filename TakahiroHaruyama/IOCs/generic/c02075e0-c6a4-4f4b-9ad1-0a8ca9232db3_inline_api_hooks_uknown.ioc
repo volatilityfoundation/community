@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="c02075e0-c6a4-4f4b-9ad1-0a8ca9232db3" last-modified="2015-02-26T12:55:09" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>Inline API hook uknown module</short_description>
+    <description>Inline API hooking with hooks inside &lt;unknown&gt; modules</description>
+    <authored_by>Francesco "dfirfpi" Picasso</authored_by>
+    <authored_date>2015-02-13T13:45:09</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="9ecddd06-7482-4752-8f64-bd5f471c7d3a" operator="OR"><IndicatorItem preserve-case="false" negate="false" id="76a1136c-3fb8-402e-9e52-74b1f27e9a07" condition="is"><Context document="ProcessItem" search="ProcessItem/Hooked/API/HookingModuleName" type="volatility"/><Content type="string">&lt;unknown&gt;</Content></IndicatorItem></Indicator>
+  </criteria>
+  <parameters/>
+</OpenIOC>

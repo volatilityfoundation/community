@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="b28d0314-ca44-45da-97e6-be540a92d929" last-modified="2015-02-26T14:11:08" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>Process/module hollowing</short_description>
+    <description>Check with ldrmodules for empty paths.</description>
+    <authored_by>Francesco "dfirfpi" Picasso</authored_by>
+    <authored_date>2015-02-26T14:04:20</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="05adc42f-6809-4b40-92ef-8c7ad7ae4db1" operator="OR">
+      <IndicatorItem preserve-case="false" negate="false" id="5f0fade1-c529-45c7-a416-460639fd8b6a" condition="is">
+        <Context document="ProcessItem" search="ProcessItem/DllPath" type="volatility"/>
+        <Content type="string"></Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters/>
+</OpenIOC>

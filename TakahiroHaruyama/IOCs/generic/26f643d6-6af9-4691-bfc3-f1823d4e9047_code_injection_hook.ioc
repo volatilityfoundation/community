@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="26f643d6-6af9-4691-bfc3-f1823d4e9047" last-modified="2015-02-26T03:27:02" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>process code injection (based on unknown hook)</short_description>
+    <description></description>
+    <authored_by>Takahiro Haruyama</authored_by>
+    <authored_date>2015-02-26T03:23:58</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="49cbcede-0d87-45af-ab17-fe080a9120ef" operator="OR">
+      <Indicator id="ce8ef07b-dfda-4866-a069-d8999a0bd254" operator="AND">
+        <IndicatorItem preserve-case="false" negate="false" id="c7ed9dc1-d6c2-4f3b-912c-847e987f3f29" condition="is">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/Injected" type="volatility"/>
+          <Content type="string">true</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="ef7fa64d-8487-469e-afa7-8f539f8e275e" condition="contains">
+          <Context document="ProcessItem" search="ProcessItem/Hooked/API/HookingModuleName" type="volatility"/>
+          <Content type="string">unknown</Content>
+        </IndicatorItem>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters/>
+</OpenIOC>

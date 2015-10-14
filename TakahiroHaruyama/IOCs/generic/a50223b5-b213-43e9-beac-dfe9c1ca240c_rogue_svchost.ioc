@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="a50223b5-b213-43e9-beac-dfe9c1ca240c" last-modified="2014-08-08T10:25:40Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>rogue svchost</short_description>
+    <authored_date>2014-08-06T02:11:39Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="2e44d973-45d4-48b6-a7ea-3f2c9db1ed80">
+      <Indicator operator="AND" id="218da8b1-f7be-4509-a0c6-914f8a715e6f">
+        <IndicatorItem id="597fad21-28a6-4462-ada1-bfa9b3e3ed10" condition="is" preserve-case="false" negate="true">
+          <Context document="ProcessItem" search="ProcessItem/ParentProcessName" type="volatility" />
+          <Content type="string">services.exe</Content>
+        </IndicatorItem>
+        <IndicatorItem id="77278d01-6e9b-4aed-8aa0-191fc47056f6" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/name" type="mir" />
+          <Content type="string">svchost.exe</Content>
+        </IndicatorItem>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

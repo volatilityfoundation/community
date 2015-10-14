@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="e747cd9d-2ed5-41fe-9e6a-64b49680eeca" last-modified="2015-02-26T03:03:29" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>suspicious paths (executed)</short_description>
+    <description>suspicious executable path extracted from ShimCache</description>
+    <authored_by>Takahiro Haruyama</authored_by>
+    <authored_date>2014-09-26T10:10:08Z</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="6e7032ea-742f-4dcc-838f-73e8c52efe25">
+      <IndicatorItem id="48628fe2-9bd7-436e-8217-5ee0a00fac7f" condition="contains" preserve-case="false" negate="false">
+          <Context document="RegistryItem" search="RegistryItem/ShimCache/ExecutablePath" type="volatility"/>
+          <Content type="string">\ProgramData</Content>
+        </IndicatorItem>
+        <IndicatorItem id="b9a9411d-91ec-42f2-af59-71135ed68108" condition="contains" preserve-case="false" negate="false">
+          <Context document="RegistryItem" search="RegistryItem/ShimCache/ExecutablePath" type="volatility"/>
+          <Content type="string">\$Recycle.Bin</Content>
+        </IndicatorItem>
+        <IndicatorItem id="8bf455b3-dd68-49e0-af43-208cc5c753bf" condition="contains" preserve-case="false" negate="false">
+          <Context document="RegistryItem" search="RegistryItem/ShimCache/ExecutablePath" type="volatility"/>
+          <Content type="string">\Windows\Temp</Content>
+        </IndicatorItem>
+        <IndicatorItem id="a797f2f0-2551-486a-86e1-35d7b296a513" condition="contains" preserve-case="false" negate="false">
+          <Context document="RegistryItem" search="RegistryItem/ShimCache/ExecutablePath" type="volatility"/>
+          <Content type="string">\Users\All Users</Content>
+        </IndicatorItem>
+        <IndicatorItem id="cb8fe399-0180-46e2-9750-266e4f591b46" condition="contains" preserve-case="false" negate="false">
+          <Context document="RegistryItem" search="RegistryItem/ShimCache/ExecutablePath" type="volatility"/>
+          <Content type="string">\Users\Default</Content>
+        </IndicatorItem>
+        <IndicatorItem id="5e78811b-7782-46a2-a796-7293e3500056" condition="contains" preserve-case="false" negate="false">
+          <Context document="RegistryItem" search="RegistryItem/ShimCache/ExecutablePath" type="volatility"/>
+          <Content type="string">\Users\Public</Content>
+        </IndicatorItem>
+      <IndicatorItem id="f8f2cecc-7b47-486d-8ca8-59ed6a4bcc68" condition="matches" preserve-case="false" negate="false">
+          <Context document="RegistryItem" search="RegistryItem/ShimCache/ExecutablePath" type="volatility"/>
+          <Content type="string">\\Users\\.*\\AppData</Content>
+        </IndicatorItem>
+        </Indicator>
+  </criteria>
+  <parameters>
+    <param ref-id="f8f2cecc-7b47-486d-8ca8-59ed6a4bcc68" id="64b57880-7acd-4de2-bb41-3d8359295ab6" name="detail">
+      <value type="string">on</value>
+    </param>
+    <param ref-id="48628fe2-9bd7-436e-8217-5ee0a00fac7f" id="f232a4aa-832a-4c6e-aae3-92e50883e7cc" name="detail">
+      <value type="string">on</value>
+    </param>
+    <param id="b9390b50-dd36-4782-9560-b6719bc21862" ref-id="5e78811b-7782-46a2-a796-7293e3500056" name="detail"><value type="string">on</value></param><param id="745eac9b-7d59-4793-a425-052830f3d426" ref-id="b9a9411d-91ec-42f2-af59-71135ed68108" name="detail"><value type="string">on</value></param><param id="18d75448-c985-4709-a5c1-2c2fe1353619" ref-id="cb8fe399-0180-46e2-9750-266e4f591b46" name="detail"><value type="string">on</value></param><param id="25dddf5b-052e-4fc6-aaf4-90575ad30490" ref-id="a797f2f0-2551-486a-86e1-35d7b296a513" name="detail"><value type="string">on</value></param><param id="c262d4ea-1097-45fb-a2fa-796f3f2e9750" ref-id="8bf455b3-dd68-49e0-af43-208cc5c753bf" name="detail"><value type="string">on</value></param></parameters>
+</OpenIOC>

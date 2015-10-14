@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="fb4064f7-8fcd-4a81-9584-cd874c365d12" last-modified="2015-05-12T06:24:07" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>EquationDrug HDD/SSD firmware operation (kernel)</short_description>
+    <description>nls_933w.dll/win32m.sys
+https://securelist.com/blog/research/69203/inside-the-equationdrug-espionage-platform/</description>
+    <authored_by>Takahiro Haruyama</authored_by>
+    <authored_date>2015-04-28T06:33:48</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="52d21d26-3ab6-4d40-8c5d-46507d13edab" operator="OR">
+      <Indicator id="8f1ea1a5-a87b-43d3-9b0e-96547909660c" operator="AND">
+        <IndicatorItem preserve-case="false" negate="false" id="21b0a66c-ec1b-4700-9a1d-4000c9b22895" condition="matches">
+          <Context document="DriverItem" search="DriverItem/StringList/string" type="volatility"/>
+          <Content type="string">\xc0\x21\x00\x87</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="1c86a0ae-682a-4194-be46-c6b5069cb3c1" condition="matches">
+          <Context document="DriverItem" search="DriverItem/StringList/string" type="volatility"/>
+          <Content type="string">\xc4\x21\x00\x87</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="68056c3b-5bf3-4ff9-9662-6590164c9e5c" condition="matches">
+          <Context document="DriverItem" search="DriverItem/StringList/string" type="volatility"/>
+          <Content type="string">\xc8\x21\x00\x87</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="6f7a5247-b72b-4f11-929a-8b9797a36228" condition="matches">
+          <Context document="DriverItem" search="DriverItem/StringList/string" type="volatility"/>
+          <Content type="string">\xcc\x21\x00\x87</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="a4316a20-8603-4d22-8312-a9ce1c86ecd9" condition="matches">
+          <Context document="DriverItem" search="DriverItem/StringList/string" type="volatility"/>
+          <Content type="string">\xd0\x21\x00\x87</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="2e411780-dcfc-49f3-a7f8-c8bcf456ad35" condition="matches">
+          <Context document="DriverItem" search="DriverItem/StringList/string" type="volatility"/>
+          <Content type="string">\xd4\x21\x00\x87</Content>
+        </IndicatorItem>
+      </Indicator>
+      <IndicatorItem preserve-case="false" negate="false" id="8c68c15d-4d55-4725-a29f-daff8168f908" condition="matches">
+          <Context document="DriverItem" search="DriverItem/StringList/string" type="volatility"/>
+          <Content type="string">\x8A\x53\xFF\x80\xFA\xFF\x75\x1D\x8D\x43\xFB\x39\x08\x75\x32\xF6\x03\x04</Content>
+        </IndicatorItem>
+      </Indicator>
+  </criteria>
+  <parameters><param id="c7f33513-ea3c-45b9-9639-9fceb50d2559" ref-id="8f1ea1a5-a87b-43d3-9b0e-96547909660c" name="note"><value type="string">IoControlCode</value></param><param id="00a50d8a-4650-4e7b-863a-5c35135d401e" ref-id="8c68c15d-4d55-4725-a29f-daff8168f908" name="note"><value type="string">code parsing ATA data seq</value></param></parameters>
+</OpenIOC>

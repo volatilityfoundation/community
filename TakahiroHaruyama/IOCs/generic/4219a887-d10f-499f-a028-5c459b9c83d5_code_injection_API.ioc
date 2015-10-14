@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="4219a887-d10f-499f-a028-5c459b9c83d5" last-modified="2015-02-26T03:37:48" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>process code injection (based on API)</short_description>
+    <description/>
+    <authored_by>Takahiro Haruyama</authored_by>
+    <authored_date>2014-11-18T10:05:21</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="9c2f557a-1352-4214-a884-904ffb62dfef" operator="OR">
+      <Indicator id="30c91639-95ec-48c1-9fbe-c364617fc0f3" operator="AND">
+        <Indicator id="81494995-61c6-4c48-b59e-144c7fe80f90" operator="OR"><IndicatorItem preserve-case="false" negate="false" id="913a74e8-511c-4ff6-ae9f-fb084f064de3" condition="is"><Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/Injected" type="volatility"/><Content type="string">true</Content></IndicatorItem><IndicatorItem preserve-case="false" negate="false" id="71f7b32c-ffbe-4e71-9493-85e678f95b1b" condition="contains"><Context document="ProcessItem" search="ProcessItem/EnabledPrivilege/Name" type="volatility"/><Content type="string">SeDebugPrivilege</Content></IndicatorItem></Indicator><Indicator id="167871f2-a9a1-431b-91e1-5edfbfd05563" operator="OR">
+          <IndicatorItem preserve-case="false" negate="false" id="13914b9c-a586-46c3-83da-fb10f3bea5e4" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">VirtualAllocEx</Content>
+          </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="af0036be-e4eb-4825-9a76-3c91989cc9e0" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">AllocateVirtualMemory</Content>
+          </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="05790ee5-4450-490f-a044-f94335167de9" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">VirtualProtectEx</Content>
+          </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="1bc5e9ff-cd30-4aa2-97e7-0d4188fd3e3c" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">ProtectVirtualMemory</Content>
+          </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="8db55aa0-fbab-49df-9457-900ca693fbd7" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">CreateProcess</Content>
+          </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="50b53037-93bb-4b50-b795-a46d19090717" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">LoadLibrary</Content>
+          </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="01915a40-24bc-42c4-93fd-426a413ffcbd" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">LdrLoadDll</Content>
+          </IndicatorItem>
+        </Indicator>
+        <Indicator id="d6dd6171-eaf6-48cc-97a6-11fda250a1fa" operator="OR"><IndicatorItem preserve-case="false" negate="false" id="7b69e478-f00b-4a79-9080-a85eec6858cc" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">CreateToolhelp32Snapshot</Content>
+          </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="5f2e4ef5-502c-4631-bd0b-0fc0c3017752" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">QuerySystemInformation</Content>
+          </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="d2e5242a-b608-464e-9f2f-83f31f3e863c" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">EnumProcesses</Content>
+          </IndicatorItem>
+        </Indicator><Indicator id="b312c00a-26f6-404d-ba3d-1c466aece7c4" operator="OR"><IndicatorItem preserve-case="false" negate="false" id="06dd04a6-bbed-4521-ab3d-82025f4f4ed0" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">WriteProcessMemory</Content>
+          </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="443cbcca-9006-4253-bf10-5ae75e82d43a" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">WriteVirtualMemory</Content>
+          </IndicatorItem>
+        </Indicator><Indicator id="1c4e911b-5065-44e0-a4ba-4f454dc12dd6" operator="OR"><IndicatorItem preserve-case="false" negate="false" id="5f67f100-774f-4445-ad1b-068108f8dc94" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">CreateRemoteThread</Content>
+          </IndicatorItem>
+          <IndicatorItem preserve-case="false" negate="false" id="ddb8ee32-745d-4b79-af9e-348881bdac8c" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">ResumeThread</Content>
+          </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="8d79d670-6d5f-4222-8601-6d32fecbdd6f" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">SetThreadContext</Content>
+          </IndicatorItem>
+          <IndicatorItem preserve-case="false" negate="false" id="9f60727f-ca97-4d2a-83a6-4f0c84a6bc1d" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">SetContextThread</Content>
+          </IndicatorItem>
+          <IndicatorItem preserve-case="false" negate="false" id="a5d7090a-4111-4579-a476-78e02bbe3374" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">QueueUserAPC</Content>
+          </IndicatorItem>
+          <IndicatorItem preserve-case="false" negate="false" id="d64f6127-2db7-42fe-a086-68a3dedc3bf0" condition="contains">
+            <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+            <Content type="string">QueueApcThread</Content>
+          </IndicatorItem>
+          </Indicator></Indicator>
+    </Indicator>
+  </criteria>
+  <parameters><param id="44350269-84ae-42c0-a279-865e454ef1d3" ref-id="06dd04a6-bbed-4521-ab3d-82025f4f4ed0" name="score"><value type="string">25</value></param><param id="073e7b23-a143-46d2-8171-4e2e6e72ca75" ref-id="443cbcca-9006-4253-bf10-5ae75e82d43a" name="score"><value type="string">25</value></param><param id="221bdf0e-e4f8-4122-9f40-edb535f41004" ref-id="5f67f100-774f-4445-ad1b-068108f8dc94" name="score"><value type="string">25</value></param><param id="e964997a-b1f5-4c9f-ac8e-779f6a1836f7" ref-id="a5d7090a-4111-4579-a476-78e02bbe3374" name="score"><value type="string">25</value></param><param id="952e1fe5-2e8e-45a0-a23a-bf791135e94a" ref-id="d64f6127-2db7-42fe-a086-68a3dedc3bf0" name="score"><value type="string">25</value></param><param id="42dca869-76ab-432e-b059-0f196245ddd5" ref-id="7b69e478-f00b-4a79-9080-a85eec6858cc" name="score"><value type="string">10</value></param><param id="3bae1120-5e51-4442-8d66-8f51bcd3abbb" ref-id="5f2e4ef5-502c-4631-bd0b-0fc0c3017752" name="score"><value type="string">10</value></param><param id="f149562e-742f-4b15-9fea-e852f4b7a4b8" ref-id="913a74e8-511c-4ff6-ae9f-fb084f064de3" name="score"><value type="string">25</value></param><param id="ed5453b4-18c8-4aff-8a5e-fb319e91e113" ref-id="71f7b32c-ffbe-4e71-9493-85e678f95b1b" name="score"><value type="string">10</value></param><param id="dace148c-3fe4-4202-9afc-6801eb52df4e" ref-id="d2e5242a-b608-464e-9f2f-83f31f3e863c" name="score"><value type="string">10</value></param><param id="9d6cea18-9eae-4e2f-9087-1eec7acb2204" ref-id="13914b9c-a586-46c3-83da-fb10f3bea5e4" name="score"><value type="string">25</value></param><param id="258d1f58-84db-4c14-8070-394027d718cb" ref-id="af0036be-e4eb-4825-9a76-3c91989cc9e0" name="score"><value type="string">25</value></param><param id="e8c3d393-0454-4446-ae70-44112ad1fd67" ref-id="05790ee5-4450-490f-a044-f94335167de9" name="score"><value type="string">10</value></param><param id="462a1de8-a999-4ad2-8085-c14fe96eb789" ref-id="1bc5e9ff-cd30-4aa2-97e7-0d4188fd3e3c" name="score"><value type="string">10</value></param></parameters>
+</OpenIOC>

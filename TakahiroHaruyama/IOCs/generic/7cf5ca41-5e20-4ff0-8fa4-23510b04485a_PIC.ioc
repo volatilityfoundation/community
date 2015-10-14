@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="7cf5ca41-5e20-4ff0-8fa4-23510b04485a" last-modified="2014-11-21T10:07:14" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>position independent code (PEB, get PC, API hash)</short_description>
+    <description>This indicator focuses on 32-bit malware only</description>
+    <authored_by>Takahiro Haruyama</authored_by>
+    <authored_date>2014-11-20T07:29:01</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="80134cdd-247b-4984-9ab6-c8e423cdc95a" operator="OR"><Indicator id="ba3e9a18-0c1d-4ccc-bc40-ec2f801e96f1" operator="AND"><IndicatorItem preserve-case="false" negate="false" id="9955774a-3c22-4274-9ed0-a4823fade2d3" condition="is"><Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/Injected" type="volatility"/><Content type="string">true</Content></IndicatorItem><IndicatorItem id="08977335-ecfc-484c-9f79-2abfd90dcd1a" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xE8\x00\x00\x00\x00[\x5D\x5E\x58]</Content>
+        </IndicatorItem>
+      <Indicator id="b8a5f669-4acd-4b7e-8928-a0e3cfb8ffeb" operator="OR"><IndicatorItem id="f02b0b3c-06b9-49b6-9280-65c62bd2fe2f" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xA5\x17\x00\x7C</Content>
+        </IndicatorItem>
+      <IndicatorItem id="9d5a2114-ce70-4d62-bfac-49edb2713129" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x9B\x3B\xCA\xCA</Content>
+        </IndicatorItem>
+      <IndicatorItem id="caee36f7-557b-4e42-9918-f2de810d8e94" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xDF\x2D\x89\x8C</Content>
+        </IndicatorItem>
+      <IndicatorItem id="9bd28773-18da-4d19-ae7c-dda510039515" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xE6\x16\xFF\xD2</Content>
+        </IndicatorItem>
+      <IndicatorItem id="34116a72-e338-4414-bb0d-9e7970f259ef" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x06\xE5\xB0\xCF</Content>
+        </IndicatorItem>
+      <IndicatorItem id="993a9641-fe7e-4e44-b241-a2dd9750124e" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xA2\x52\x48\x44</Content>
+        </IndicatorItem>
+      <IndicatorItem id="ac76a17c-cbc4-4e7a-b910-ef25e8f19149" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x7A\x2A\xC6\x38</Content>
+        </IndicatorItem>
+      <IndicatorItem id="8efcdc90-2e09-41b7-abaa-baee4f51626c" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x93\x32\xE4\x94</Content>
+        </IndicatorItem>
+      <IndicatorItem id="efe5d956-2bdb-41d5-862a-32eb1147308f" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xE7\xEE\xFD\xFA</Content>
+        </IndicatorItem>
+      <IndicatorItem id="ee604897-9483-49e5-b45f-b3bf461294b9" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xA0\xDF\x16\xD5</Content>
+        </IndicatorItem>
+      <IndicatorItem id="a231bced-fdd5-4ef1-b590-6deacca7ff84" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xA4\x17\x00\x7C</Content>
+        </IndicatorItem>
+      <IndicatorItem id="f7072903-54c0-4f9e-8b73-d406b6d0319a" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x35\x61\xAE\xA3</Content>
+        </IndicatorItem>
+      <IndicatorItem id="6e6f21d8-0aad-4715-8792-f4ffc47b69dc" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x46\x77\x06\x00</Content>
+        </IndicatorItem>
+      <IndicatorItem id="37815abf-e782-46ca-81e9-e48090c66c4e" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xDA\xF6\xDA\x4F</Content>
+        </IndicatorItem>
+      </Indicator></Indicator><IndicatorItem id="7979f975-ebac-4015-aba0-81f3640644fc" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x64\xA1\x30\x00\x00\x00\x8B\x40\x0C</Content>
+        </IndicatorItem>
+      <IndicatorItem id="c2dd1da8-c622-4054-a25c-9d6ec1a1f261" condition="matches" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x64\x8B.\x30\x8B.\x0C\x8B</Content>
+        </IndicatorItem>
+      </Indicator>
+  </criteria>
+  <parameters><param id="de307839-05cb-4e5b-ae3e-272809f75015" ref-id="5d20ae9a-e804-494d-ae8c-e8a36727bc7b" name="note"><value type="string">getting PEB #1</value></param><param id="aca2cddf-de52-440f-b69c-7263ac0eaf8a" ref-id="c2dd1da8-c622-4054-a25c-9d6ec1a1f261" name="note"><value type="string">PEB#2</value></param><param id="fa256c54-d74f-4451-997a-3f3b025ff494" ref-id="7979f975-ebac-4015-aba0-81f3640644fc" name="note"><value type="string">PEB#1</value></param><param id="bfc4b869-9866-4736-8f9c-d8330e376606" ref-id="08977335-ecfc-484c-9f79-2abfd90dcd1a" name="note"><value type="string">getPC</value></param><param id="b4e8a568-8881-4014-b0c9-889ed530273c" ref-id="f02b0b3c-06b9-49b6-9280-65c62bd2fe2f" name="note"><value type="string">ror13AddHash32</value></param><param id="090b5c42-e4db-44b5-a278-dc2fcc6a11e6" ref-id="9d5a2114-ce70-4d62-bfac-49edb2713129" name="note"><value type="string">rol13AddHash32</value></param><param id="9cbf7ba0-7ab8-41b5-b6ce-fb9293793583" ref-id="caee36f7-557b-4e42-9918-f2de810d8e94" name="note"><value type="string">poisonIvyHash</value></param><param id="5c091a62-6a84-47ed-b0c3-5e039093e678" ref-id="9bd28773-18da-4d19-ae7c-dda510039515" name="note"><value type="string">rol7AddHash32</value></param><param id="85c97df9-7076-43bd-92af-d86af5b103f0" ref-id="34116a72-e338-4414-bb0d-9e7970f259ef" name="note"><value type="string">rol5AddHash32</value></param><param id="e2c456e3-4358-41ed-84e1-bdf358504137" ref-id="993a9641-fe7e-4e44-b241-a2dd9750124e" name="note"><value type="string">rol3XorEax</value></param><param id="e1bb0d0e-d40f-4fdf-874b-4460054409f5" ref-id="ac76a17c-cbc4-4e7a-b910-ef25e8f19149" name="note"><value type="string">rol3XorEax2</value></param><param id="adcc4dad-441b-49e7-bb35-ef566c0c77d6" ref-id="8efcdc90-2e09-41b7-abaa-baee4f51626c" name="note"><value type="string">ror7AddHash32</value></param><param id="1d65ee01-eccc-45ba-869c-cc93813d5a82" ref-id="efe5d956-2bdb-41d5-862a-32eb1147308f" name="note"><value type="string">ror9AddHash32</value></param><param id="887f8da1-b4d9-4f04-b8da-3f1a62ae9c7a" ref-id="ee604897-9483-49e5-b45f-b3bf461294b9" name="note"><value type="string">ror11AddHash32</value></param><param id="430db37b-ecc9-477c-bc20-80e2ffb116b1" ref-id="a231bced-fdd5-4ef1-b590-6deacca7ff84" name="note"><value type="string">ror13AddHash32Sub1</value></param><param id="23854e51-bfb5-4a7f-b319-615fbecaf634" ref-id="f7072903-54c0-4f9e-8b73-d406b6d0319a" name="note"><value type="string">shl7shr19Hash32</value></param><param id="c575c92d-5533-4542-ba1b-f5e388c45c8e" ref-id="6e6f21d8-0aad-4715-8792-f4ffc47b69dc" name="note"><value type="string">sll1AddHash32</value></param><param id="60576093-9543-4997-85d9-8d06f093c874" ref-id="37815abf-e782-46ca-81e9-e48090c66c4e" name="note"><value type="string">msfHash32</value></param></parameters>
+</OpenIOC>

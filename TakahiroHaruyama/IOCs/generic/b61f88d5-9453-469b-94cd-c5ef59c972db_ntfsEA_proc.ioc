@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="b61f88d5-9453-469b-94cd-c5ef59c972db" last-modified="2014-11-28T09:18:59" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>using NTFS $EA (process)</short_description>
+    <description/>
+    <authored_by>Takahiro Haruyama</authored_by>
+    <authored_date>2014-11-28T05:58:45</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="41431c82-04b5-451c-bcda-58bfb0bfa1bd" operator="OR">
+      <IndicatorItem preserve-case="false" negate="false" id="e0d209b0-b544-4876-8012-d27108724f44" condition="contains">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+          <Content type="string">QueryEaFile</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="56700f63-ae9a-4cba-81af-5ac26ecdadb0" condition="contains">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/PEInfo/ImportedModules/Module/ImportedFunctions/string" type="volatility"/>
+          <Content type="string">SetEaFile</Content>
+        </IndicatorItem>
+      </Indicator>
+  </criteria>
+  <parameters/>
+</OpenIOC>

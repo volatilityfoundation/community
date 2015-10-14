@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenIOC xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://openioc.org/schemas/OpenIOC_1.1" id="ec7eed9a-d266-4443-9333-0234cca0f682" last-modified="2015-05-12T06:22:34" published-date="0001-01-01T00:00:00">
+  <metadata>
+    <short_description>EquationDrug HDD/SSD firmware operation (process)</short_description>
+    <description>nls_933w.dll/win32m.sys
+https://securelist.com/blog/research/69203/inside-the-equationdrug-espionage-platform/</description>
+    <authored_by>Takahiro Haruyama</authored_by>
+    <authored_date>2015-04-27T11:01:32</authored_date>
+    <links/>
+  </metadata>
+  <criteria>
+    <Indicator id="52d21d26-3ab6-4d40-8c5d-46507d13edab" operator="OR">
+      <Indicator id="8f1ea1a5-a87b-43d3-9b0e-96547909660c" operator="AND">
+        <IndicatorItem preserve-case="false" negate="false" id="21b0a66c-ec1b-4700-9a1d-4000c9b22895" condition="matches">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xc0\x21\x00\x87</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="1c86a0ae-682a-4194-be46-c6b5069cb3c1" condition="matches">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xc4\x21\x00\x87</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="68056c3b-5bf3-4ff9-9662-6590164c9e5c" condition="matches">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xc8\x21\x00\x87</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="6f7a5247-b72b-4f11-929a-8b9797a36228" condition="matches">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xcc\x21\x00\x87</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="a4316a20-8603-4d22-8312-a9ce1c86ecd9" condition="matches">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xd0\x21\x00\x87</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="2e411780-dcfc-49f3-a7f8-c8bcf456ad35" condition="matches">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\xd4\x21\x00\x87</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator id="d22ac63f-43c6-46c4-ac82-f7d4996c3d24" operator="AND">
+        <IndicatorItem preserve-case="false" negate="false" id="477eca0c-2592-47cc-a7a1-1e216c5c3ab1" condition="matches">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x07\xec</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="52cad249-2afd-4cb6-81d8-9ed1f6fbb13c" condition="matches">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x00\x00\x00\x00\x01\x57\x00\x00\x00\x00\x02\x44\x00\x00\x00\x00\x03\x43\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x06\xa0\x00\x00\x00\x00\x07\x8a</Content>
+        </IndicatorItem>
+        <IndicatorItem preserve-case="false" negate="false" id="364344e5-e104-4ce2-b271-679d1841aa68" condition="matches">
+          <Context document="ProcessItem" search="ProcessItem/StringList/string" type="volatility"/>
+          <Content type="string">\x00\x00\x00\x00\x01\x57\x00\x00\x00\x00\x02\x44\x00\x00\x00\x00\x03\x43\x00\x00\x00\x00\x04\x0e\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x06\xa0\x00\x00\x00\x00\x07\x91</Content>
+        </IndicatorItem>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters><param id="1053bd97-c140-4163-b32d-0745b1cf30ff" ref-id="8f1ea1a5-a87b-43d3-9b0e-96547909660c" name="note"><value type="string">IoControlCode</value></param><param id="e2b40128-b652-4e78-963e-5def12351883" ref-id="d22ac63f-43c6-46c4-ac82-f7d4996c3d24" name="note"><value type="string">ATA data sequence</value></param></parameters>
+</OpenIOC>
