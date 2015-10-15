@@ -14,7 +14,7 @@ NOTE: If you pass the root of the $PLUGINSPATH directory, then all plugins will 
 
 disclaimer
 =========
-These plugins are written by various authors and collected from the authors' GitHub repositories, websites and blogs at a particular point in time. We don't guarantee that the plugins you download from this repo will be the most recent ones published by the individual authors. 
+These plugins are written by various authors and collected from the authors' GitHub repositories, websites and blogs at a particular point in time. We don't guarantee that the plugins you download from this repo will be the most recent ones published by the individual authors, that they're compatible with the most recent version of Volatility, or that they report results accurately. 
 
 contributing
 =========
