@@ -12,6 +12,10 @@ usage
 
 NOTE: If you pass the root of the $PLUGINSPATH directory, then all plugins will recursively be loaded. Its possible that plugins may try to register the same command line options and produce a conflict. If this happens, just point --plugins at one or more specific subdirectories (`:` separated on Linux/Mac or `;` separated on Windows). 
 
+disclaimer
+=========
+These plugins are written by various authors and collected from the authors' GitHub repositories, websites and blogs at a particular point in time. We don't guarantee that the plugins you download from this repo will be the most recent ones published by the individual authors. 
+
 contributing
 =========
 
