@@ -20,3 +20,16 @@ contributing
 =========
 
 The best way to contribute is to fork the repository, add or modify plugins, and then submit a pull request. 
+
+frameworks 
+=========
+
+Researchers and developers in the community have also created frameworks that build on top of Volatility. These aren't necessarily Volatility plugins (that you would import with --plugins) and usually they contain additional modules, configurations, and components. For that reason, we don't feature those frameworks in this repository, but we'd still like to reference them: 
+
+* [Cuckoo Sandbox](https://github.com/cuckoobox/cuckoo) uses Volatility for its Memory module
+* [VolDiff](https://github.com/aim4r/VolDiff) Malware Memory Footprint Analysis by @aim4r
+* [Evolve](https://github.com/JamesHabben/evolve) Web interface for the Volatility Memory Forensics Framework by James Habben
+* [GVol](https://github.com/eg-cert/GVol) Lightweight GUI (Java) by EG-CERT
+* [LibVMI](https://github.com/libvmi/libvmi) Simplified Virtual Machine Introspection 
+
+Don't see your project here? Let us know by submitting a pull request, creating an issue, or tweet us at @volatility. 
