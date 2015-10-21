@@ -31,5 +31,6 @@ Researchers and developers in the community have also created frameworks that bu
 * [Evolve](https://github.com/JamesHabben/evolve) Web interface for the Volatility Memory Forensics Framework by James Habben
 * [GVol](https://github.com/eg-cert/GVol) Lightweight GUI (Java) by EG-CERT
 * [LibVMI](https://github.com/libvmi/libvmi) Simplified Virtual Machine Introspection 
+* [DAMM](https://github.com/504ensicsLabs/DAMM) Differencial Analysis of Malware in Memory
 
 Don't see your project here? Let us know by submitting a pull request, creating an issue, or tweet us at @volatility. 
