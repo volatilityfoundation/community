@@ -25,15 +25,16 @@ How to use
 2) Run the "shimcachemem" plugin. The following command writes the shim cache
    contents to standard output:
 
-   > python vol.py -f Win2012R2x64.raw --profile=Win2012R2x64 --kdbg=0xf801a185b9b0 shimcachemem
+   ```> python vol.py -f Win2012R2x64.raw --profile=Win2012R2x64 --kdbg=0xf801a185b9b0 shimcachemem```
 
    The following command writes the output to a CSV file:
 
-   > python vol.py -f Win2012R2x64.raw --profile=Win2012R2x64 --kdbg=0xf801a185b9b0 shimcachemem --output=csv --output-file=Win2012R2x64.csv
+   ```> python vol.py -f Win2012R2x64.raw --profile=Win2012R2x64 --kdbg=0xf801a185b9b0 shimcachemem --output=csv --output-file=Win2012R2x64.csv```
 
 3) In addition to the output format, the plugin supports the following options:
 
-    ---------------------------------------------------------------------------
+```
+   ---------------------------------------------------------------------------
    | -c | --clean_file_paths | Strips UNC path prefixes ("\\??\") and replaces |
    |    |                    | SYSVOL with "C:". Intended an a convenience for |
    |    |                    | analysts.                                       |
@@ -43,6 +44,7 @@ How to use
    |    |                    | additional forensic analysis of the memory      |
    |    |                    | image.                                          |
     ---------------------------------------------------------------------------
+```
 
 --------------------------------------------------------------------------------
 Motivation
