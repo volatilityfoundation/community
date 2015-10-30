@@ -6,19 +6,17 @@ python vol.py --plugins=contrib/plugins -f ...
 """
 
 import sys
-import os
-
-import haystack
 from haystack import target
-from haystack.mappings import base
-from haystack.mappings import vol as hvol
 from haystack import api
-from haystack.search import searcher
 from haystack import constraints
 
+from haystack.mappings import base
+from haystack.mappings import vol as hvol
+from haystack.search import searcher
 
+import os
 import volatility.plugins.taskmods as taskmods
-from volatility.renderers import TreeGrid
+
 
 class Haystack(taskmods.DllList):
     """
@@ -172,6 +170,7 @@ class HaystackHeap(HaystackSearch):
             ## use direct load
             # results = api.load_record(memory_handler, struct_type, 0x150000, load_constraints=None)
 
+
 class HaystackAllocated(HaystackSearch):
     """
     Search for a record only in allocated memory chunks.
@@ -185,6 +184,7 @@ class HaystackAllocated(HaystackSearch):
         ret = api.output_to_python(memory_handler, results)
         for instance, addr in ret:
             yield addr
+
 
 class HaystackShow(HaystackSearch):
     """
@@ -214,6 +214,7 @@ class HaystackShow(HaystackSearch):
 def _print(x):
     print x
 
+
 class HaystackReverse(Haystack):
     """
     Reverse all the allocated records of a process memory.
@@ -225,52 +226,26 @@ class HaystackReverse(Haystack):
         taskmods.DllList.__init__(self, config, *args, **kwargs)
 
     def make_results(self, pid, memory_handler):
-        from haystack.reverse import context
-        from haystack.reverse import reversers
         from haystack.reverse import config
+        from haystack.reverse import api
 
         finder = memory_handler.get_heap_finder()
+        dumpname = memory_handler.get_name()
+        if not os.access(dumpname, os.F_OK):
+            os.mkdir(dumpname)
+
+        api.reverse_instances(memory_handler)
+
+        process_context = memory_handler.get_reverse_context()
         for i, heap in enumerate(finder.get_heap_mappings()):
             heap_addr = heap.get_marked_heap_address()
-
-            dumpname = memory_handler.get_name()
-            if not os.access(dumpname, os.F_OK):
-                os.mkdir(dumpname)
-
-            ctx = context.ReverserContext(memory_handler, heap)
-            ctx.heap._context = ctx
-
-
-            _print("[+] Cache %d created in %s" % (i,config.get_record_cache_folder_name(ctx.dumpname)))
-
-            # try to find some logical constructs.
-            _print('Reversing DoubleLinkedListReverser')
-            doublelink = reversers.DoubleLinkedListReverser(ctx)
-            ctx = doublelink.reverse(ctx)
-
-            # decode bytes contents to find basic types.
-            _print('Reversing Fields')
-            fr = reversers.FieldReverser(ctx)
-            ctx = fr.reverse(ctx)
-
-            # identify pointer relation between structures
-            _print('Reversing PointerFields')
-            pfr = reversers.PointerFieldReverser(ctx)
-            ctx = pfr.reverse(ctx)
-
-            # graph pointer relations between structures
-            _print('Reversing PointerGraph')
-            ptrgraph = reversers.PointerGraphReverser(ctx)
-            ctx = ptrgraph.reverse(ctx)
-            ptrgraph._saveStructures(ctx)
-
-            # save to file
-            _print('Saving headers')
-            reversers.save_headers(ctx)
-
-            #
-            outdirname = config.get_record_cache_folder_name(ctx.dumpname)
-            yield (pid, heap_addr, '%s/headers_values.py' % outdirname)
+            ctx = process_context.get_context_for_heap(heap)
+            # get the name of the interesting text output for the user.
+            outdirname = ctx.get_filename_cache_headers()
+            #config.get_cache_filename(config.CACHE_GENERATED_PY_HEADERS_VALUES,
+            #                                       ctx.dumpname,
+            #                                       ctx._heap_start)
+            yield (pid, heap_addr, outdirname)
 
     def calculate(self):
         tasks = taskmods.DllList.calculate(self)
@@ -288,3 +263,38 @@ class HaystackReverse(Haystack):
                 outfd.write("Pid: {0:6}\n".format(pid))
                 prevpid = pid
             outfd.write('Heap at 0x%x was reversed in %s\n' % (heap_addr, filename))
+
+
+class HaystackReverseStrings(HaystackReverse):
+    """
+    Reverse all the strings in allocated chunks of a process memory.
+    """
+    def __init__(self, config, *args, **kwargs):
+        self.config = config
+        HaystackReverse.__init__(self, config, *args, **kwargs)
+
+    def make_results(self, pid, memory_handler):
+        # create all contextes
+        for x in super(HaystackReverseStrings, self).make_results(pid, memory_handler):
+            pass
+
+        process_context = memory_handler.get_reverse_context()
+        # look at each record in each structure for strings
+        for ctx in process_context.list_contextes():
+            for record in ctx.listStructures():
+                for field in record.get_fields():
+                    addr = record.address + field.offset
+                    if field.is_string():
+                        maxlen = len(field)
+                        value = record.get_value_for_field(field, maxlen+10)
+                        yield (pid, addr, maxlen, value)
+
+    def render_text(self, outfd, data):
+        prevpid= None
+        for pid, addr, length, _string in data:
+            if pid != prevpid:
+                outfd.write("*" * 72 + "\n")
+                outfd.write("Pid: {0:6}\n".format(pid))
+                outfd.write("Pid, address, size, string")
+                prevpid = pid
+            outfd.write('%d,0x%x,0x%x bytes,%s\n' % (pid, addr, length, _string))
