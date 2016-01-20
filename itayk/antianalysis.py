@@ -22,7 +22,7 @@
 @license:      GNU General Public License 2.0
 @contact:      itaykrk [at] Gmail [dot] com
 @organization: CyberHat.co.il
-@description: Antianalysis find windows api calls which identified with anti-debugging techniques.
+@description: Antianalysis find windows api calls which identified with anti-debugging\analysis techniques.
 """
 
 import string
