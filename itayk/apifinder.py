@@ -41,7 +41,7 @@ class ApiFinder(taskmods.DllList):
         self._instructions_history = []
         self._api_address = {}
         config.add_option("API-FUNCTION", short_option='A', default=None, cache_invalidator=False, help='Windows api function name.')
-        config.add_option("DLL", short_option='D', default=None, cache_invalidator=False, help='Selected function library.')
+        config.add_option("DLL", short_option='D', default=None, cache_invalidator=False, help='Windows api function DLL name.')
 
     def calculate(self):
         return taskmods.DllList.calculate(self)
