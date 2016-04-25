@@ -438,6 +438,9 @@ class FirefoxHistory(common.AbstractWindowsCommand):
         for offset in scanner.scan(address_space):
             ff_buff = address_space.read(offset-21, 3000)
             start = 21
+            # new field foreign_count added around Firefox v34
+            foreign_count_length = 0
+            foreign_count = "N/A"
 
             # start before the needle match and work backwards
             if ord(ff_buff[start-1]) in (1, 2, 8, 9):
@@ -485,6 +488,7 @@ class FirefoxHistory(common.AbstractWindowsCommand):
 
             start -= 1
             payload_header_length = ord(ff_buff[start])
+            payload_header_end = start + payload_header_length
 
             start -= 1
             (row_id, varint_len) = sqlite_help.find_varint(ff_buff, start, BACKWARD)
@@ -506,6 +510,11 @@ class FirefoxHistory(common.AbstractWindowsCommand):
             (guid_length, varint_len) = sqlite_help.find_varint(ff_buff, 22, FORWARD)
             guid_length = sqlite_help.varint_to_text_length(guid_length)
             start = 22 + varint_len
+
+            # Firefox added a "foreign_count" field that needs to be handled
+            if start != payload_header_end:
+                (foreign_count_length, foreign_count) = sqlite_help.varint_type_to_length(ord(ff_buff[start]))
+                start += 1
 
             url_id = sqlite_help.sql_unpack(ff_buff[start:start+url_id_length])
 
@@ -554,20 +563,23 @@ class FirefoxHistory(common.AbstractWindowsCommand):
             guid = ff_buff[start:start+guid_length]
 
             start += guid_length
+            if foreign_count_length > 0:
+                foreign_count = sqlite_help.sql_unpack(ff_buff[start:start+foreign_count_length])
+                start += foreign_count_length
 
             # save the values as a tuple in a dictionary so we only print one unique row
-            url_tuple = (row_id, url, title, rev_host, visit_count, hidden, typed, favicon_id, frecency, last_visit_date, guid) 
+            url_tuple = (row_id, url, title, rev_host, visit_count, hidden, typed, favicon_id, frecency, last_visit_date, guid, foreign_count) 
             if not urls.get(url_tuple):
                 urls[url_tuple] = urls.get(url_tuple, 0) + 1
                 yield url_tuple
 
     def render_text(self, outfd, data):
-        self.table_header(outfd, [("ID", "6"), ("URL", "80"), ("Title", "80"), ("Rev Host", "32"), ("Visits", "6"), ("Hidden", "6"), ("Typed", "5"), ("Favicon ID", "10"), ("Frecency", "8"), ("Last Visit Date", "26"), ("GUID", "12")])
-        for row_id, url, title, rev_host, visit_count, hidden, typed, favicon_id, frecency, last_visit_date, guid in data:
-            self.table_row(outfd, row_id, url, title, rev_host, visit_count, hidden, typed, favicon_id, frecency, str(last_visit_date), guid)
+        self.table_header(outfd, [("ID", "6"), ("URL", "80"), ("Title", "80"), ("Rev Host", "32"), ("Visits", "6"), ("Hidden", "6"), ("Typed", "5"), ("Favicon ID", "10"), ("Frecency", "8"), ("Last Visit Date", "26"), ("GUID", "12"),("FOREIGN COUNT","13")])
+        for row_id, url, title, rev_host, visit_count, hidden, typed, favicon_id, frecency, last_visit_date, guid, foreign_count in data:
+            self.table_row(outfd, row_id, url, title, rev_host, visit_count, hidden, typed, favicon_id, frecency, str(last_visit_date), guid, foreign_count)
 
     def render_csv(self, outfd, data):
-        outfd.write('"id","url","title","rev_host","visit_count","hidden","typed","favicon_id","frecency","last_visit_date","guid"\n')
+        outfd.write('"id","url","title","rev_host","visit_count","hidden","typed","favicon_id","frecency","last_visit_date","guid","foreign_count"\n')
         for d in data:
             csv.writer(outfd,quoting=csv.QUOTE_ALL).writerow(d)
 
