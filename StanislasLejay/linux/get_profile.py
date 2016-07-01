@@ -1,6 +1,9 @@
 # Volatility linux_get_profile plugin
 # Copyright (c) 2016 Stanislas 'P1kachu' Lejay (p1kachu@lse.epita.fr)
 #
+# Donated under Volatility Foundation, Inc. Individual Contributor Licensing
+# Agreement
+#
 # This plugin is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
