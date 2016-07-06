@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 Submitters
 --------------------------------------------------------------------------------
-Author(s): Fred House (Mandiant, a FireEye Company)
+Author(s): Fred House (Mandiant, a FireEye Company) - Twitter: @0xF2EDCA5A
            Andrew Davis (Mandiant, a FireEye Company)
-           Claudiu Teodorescu (Mandiant, a FireEye Company)
+           Claudiu Teodorescu (Mandiant, a FireEye Company) - Twitter: @cteo13
            
 Date:   2015-09-29
 
@@ -43,6 +43,15 @@ How to use
    |    |                    | shim cache entry. Intended to facilitate        |
    |    |                    | additional forensic analysis of the memory      |
    |    |                    | image.                                          |
+   |    |                    |                                                 |
+   | -i | --ignore_win_apps  | On Windows 10, the shim cache contains entries  |
+   |    |                    | for Windows apps, which are in a format that is |
+   |    |                    | not parsed by this plugin. This option excludes |
+   |    |                    | these entries from the output.                  |
+   |    |                    |                                                 |
+   |    | --system_name      | An optional system name to add as a column to   |
+   |    |                    | the output.                                     |
+   |    |                    |                                                 |
     ---------------------------------------------------------------------------
 ```
 
@@ -63,5 +72,5 @@ request a system reboot.
 
 This plugin parses the shim cache directly from the module or process containing
 the cache, thereby providing analysts access to the most up-to-date cache. The 
-plugin supports Windows XP SP2 through Windows 2012 R2 on both 32 and 64
+plugin supports Windows XP SP2 through Windows 10 on both 32 and 64
 bit architectures.
