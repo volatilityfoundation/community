@@ -341,13 +341,14 @@ class PrefetchParser(common.AbstractWindowsCommand):
                 #   file path hash to the ones generated
                 full_path = ''
                 for path in directories:
-                    full_path = "{0}\\{1}".format(path, pf_header.Name)
+                    tmp_path = "{0}\\{1}".format(path, pf_header.Name)
                     if pf_header.Version == 17:
-                        pf_hash = HashGenerator(full_path).ssca_xp_hash_function()
+                        pf_hash = HashGenerator(tmp_path).ssca_xp_hash_function()
                     elif pf_header.Version == 23:
-                        pf_hash = HashGenerator(full_path).ssca_vista_hash_function()
+                        pf_hash = HashGenerator(tmp_path).ssca_vista_hash_function()
 
                     if "{0}".format(pf_hash) == "{0}".format(pf_header.Hash):
+                        full_path = tmp_path
                         break
 
                 self.table_row(outfd,
