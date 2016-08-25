@@ -294,14 +294,16 @@ class PrefetchParser(common.AbstractWindowsCommand):
         for pf_header in data:
             pf_file = '{0}-{1:X}.pf'.format(pf_header.Name, pf_header.Hash)
             if self._config.FULL_PATHS:
+                full_path = ""
                 for path in directories:
-                    full_path = "{0}\\{1}".format(path, pf_header.Name)
+                    tmp_path = "{0}\\{1}".format(path, pf_header.Name)
                     if pf_header.Version == 17:
-                        pf_hash = HashGenerator(full_path).ssca_xp_hash_function()
+                        pf_hash = HashGenerator(tmp_path).ssca_xp_hash_function()
                     elif pf_header.Version == 23:
-                        pf_hash = HashGenerator(full_path).ssca_vista_hash_function()
+                        pf_hash = HashGenerator(tmp_path).ssca_vista_hash_function()
 
                     if "{0}".format(pf_hash) == "{0}".format(pf_header.Hash):
+                        full_path = tmp_path
                         break
 
                 yield (0, [str(pf_file),
