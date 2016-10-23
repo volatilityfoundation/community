@@ -180,7 +180,7 @@ class LsaDecryptor():
 
   HARD_KEY = construct.Struct('KIWI_HARD_KEY',
       construct.Int32ul('cbSecret'),
-      construct.Field('data', lambda ctx: ctx.cbSecret))
+      construct.FormatField('data', lambda ctx: ctx.cbSecret))
 
   # Modified to include HARD_KEY size.
   BCRYPT_KEY = construct.Struct('KIWI_BCRYPT_KEY',
