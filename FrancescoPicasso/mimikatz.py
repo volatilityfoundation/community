@@ -350,9 +350,9 @@ class LsaDecryptor_Vista_x64(LsaDecryptor_x64):
   BCRYPT_HANDLE_KEY = construct.Struct('KIWI_BCRYPT_HANDLE_KEY',
       construct.Int32ul('size'),
       construct.Int32ul('tag'), # Tag 'UUUR', 0x55555552.
-      construct.ULInt64('ptr_void_algorithm'),
-      construct.ULInt64('ptr_kiwi_bcrypt_key'),
-      construct.ULInt64('ptr_unknown'))
+      construct.Int64ul('ptr_void_algorithm'),
+      construct.Int64ul('ptr_kiwi_bcrypt_key'),
+      construct.Int64ul('ptr_unknown'))
   
   def __init__(self, lsass_task):
     LsaDecryptor_x64.__init__(self, lsass_task)
@@ -369,9 +369,9 @@ class LsaDecryptor_Win7_x64(LsaDecryptor_x64):
   BCRYPT_HANDLE_KEY = construct.Struct('KIWI_BCRYPT_HANDLE_KEY',
       construct.Int32ul('size'),
       construct.Int32ul('tag'), # Tag 'UUUR', 0x55555552.
-      construct.ULInt64('ptr_void_algorithm'),
-      construct.ULInt64('ptr_kiwi_bcrypt_key'),
-      construct.ULInt64('ptr_unknown'))
+      construct.Int64ul('ptr_void_algorithm'),
+      construct.Int64ul('ptr_kiwi_bcrypt_key'),
+      construct.Int64ul('ptr_unknown'))
   
   def __init__(self, lsass_task):
     LsaDecryptor_x64.__init__(self, lsass_task)
@@ -478,16 +478,16 @@ class Wdigest_x86(Wdigest, Mimikatz_x86):
       construct.Int32ul('next'),
       construct.Int32ul('usage_count'),
       construct.Int32ul('this_entry'),
-      construct.ULInt64('luid'),
-      construct.ULInt64('flag'),
-      construct.ULInt16('user_len'),
-      construct.ULInt16('user_max_len'),
+      construct.Int64ul('luid'),
+      construct.Int64ul('flag'),
+      construct.Int16ul('user_len'),
+      construct.Int16ul('user_max_len'),
       construct.Int32ul('user_string_ptr'),
-      construct.ULInt16('domain_len'),
-      construct.ULInt16('domain_max_len'),
+      construct.Int16ul('domain_len'),
+      construct.Int16ul('domain_max_len'),
       construct.Int32ul('domain_string_ptr'),
-      construct.ULInt16('password_len'),
-      construct.ULInt16('password_max_len'),
+      construct.Int16ul('password_len'),
+      construct.Int16ul('password_max_len'),
       construct.Int32ul('password_encrypted_ptr'))
   
   def __init__(self, lsass_task, credentials_obj):
@@ -499,25 +499,25 @@ class Wdigest_x64(Wdigest, Mimikatz_x64):
   """TODO: add description."""
 
   WDIGEST_LIST_ENTRY = construct.Struct('WdigestListEntry',
-      construct.ULInt64('previous'),
-      construct.ULInt64('next'),
+      construct.Int64ul('previous'),
+      construct.Int64ul('next'),
       construct.Int32ul('usage_count'),
       construct.Int32ul('align1'),
-      construct.ULInt64('this_entry'),
-      construct.ULInt64('luid'),
-      construct.ULInt64('flag'),
-      construct.ULInt16('user_len'),
-      construct.ULInt16('user_max_len'),
+      construct.Int64ul('this_entry'),
+      construct.Int64ul('luid'),
+      construct.Int64ul('flag'),
+      construct.Int16ul('user_len'),
+      construct.Int16ul('user_max_len'),
       construct.Int32ul('align2'),
-      construct.ULInt64('user_string_ptr'),
-      construct.ULInt16('domain_len'),
-      construct.ULInt16('domain_max_len'),
+      construct.Int64ul('user_string_ptr'),
+      construct.Int16ul('domain_len'),
+      construct.Int16ul('domain_max_len'),
       construct.Int32ul('align3'),
-      construct.ULInt64('domain_string_ptr'),
-      construct.ULInt16('password_len'),
-      construct.ULInt16('password_max_len'),
+      construct.Int64ul('domain_string_ptr'),
+      construct.Int16ul('password_len'),
+      construct.Int16ul('password_max_len'),
       construct.Int32ul('align4'),
-      construct.ULInt64('password_encrypted_ptr'))
+      construct.Int64ul('password_encrypted_ptr'))
   
   def __init__(self, lsass_task, credentials_obj):
     Mimikatz_x64.__init__(self, lsass_task)
