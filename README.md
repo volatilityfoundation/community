@@ -33,5 +33,9 @@ Researchers and developers in the community have also created frameworks that bu
 * [LibVMI](https://github.com/libvmi/libvmi) Simplified Virtual Machine Introspection 
 * [DAMM](https://github.com/504ensicsLabs/DAMM) Differencial Analysis of Malware in Memory
 * [YaraVol](https://bitbucket.org/Ft44k/yavol/) GUI for Volatility Framework and Yara
+* [VolUtility](https://github.com/kevthehermit/VolUtility) Web Interface for Volatility by Kevin Breen
+* [ROPMEMU](https://github.com/vrtadmin/ROPMEMU) A framework to analyze, dissect and decompile complex code-reuse attacks by Mariano Graziano 
+* [VolatilityBot](https://github.com/mkorman90/VolatilityBot) An automated memory analyzer for malware samples and memory dumps by Martin Korman
+* [ProfileScan](https://github.com/P1kachu/VolatilityProfileScan) Profile detection for Volatility by Stanislas Lejay (P1kachu)
 
 Don't see your project here? Let us know by submitting a pull request, creating an issue, or tweet us at @volatility. 
