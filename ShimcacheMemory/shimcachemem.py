@@ -1168,7 +1168,7 @@ class ShimCacheMem(common.AbstractWindowsCommand):
             self.eresource_alignment = 0x20
 
         # pointer to the head of the shim cache LRU list
-        shim_cache_head = None
+        shim_cache_heads = []
 
         # plugin currently supports XP x86 (5.1) - Windows 10 (6.4)
         if (os_vsn_maj, os_vsn_min) not in [(5,1),(5,2),(6,0),(6,1),(6,2),(6,3),(6,4)]:
@@ -1199,7 +1199,7 @@ class ShimCacheMem(common.AbstractWindowsCommand):
         #Windows XP x64, 2003/2003R2, Vista/2008, 7/2008 R2
         ####################################
         elif (os_vsn_maj == 5 and os_vsn_min == 2) or (os_vsn_maj == 6 and os_vsn_min <= 1):
-            shim_cache_head = self.find_shim_win_2k3(addr_space)
+            shim_cache_heads = [self.find_shim_win_2k3(addr_space)]
 
         ####################################
         #Windows 8/2012, 8.1/2012R2, 10
@@ -1210,21 +1210,23 @@ class ShimCacheMem(common.AbstractWindowsCommand):
                 # first cache contains the shim cache. On Windows 8 x86, 8.1 x86/x64, 
                 # and 10, the second cache contains the shim cache
                 shim_cache_list = self.find_shim_win_8(addr_space, self.NT_KRNL_MODS)
-                if memory_model == '64bit':
-                    shim_cache_head = shim_cache_list[0]
-                else:
-                    shim_cache_head = shim_cache_list[1]
+                shim_cache_heads = [shim_cache_list[0], shim_cache_list[1]]
 
             elif os_vsn_min in (3, 4):
                 # On Windows 8.1 & 10, the second cache is the relevent shim cache
-                _, shim_cache_head = self.find_shim_win_8(addr_space, ["ahcache.sys"])
+                shim_cache_heads = [self.find_shim_win_8(addr_space, ["ahcache.sys"])[1]]
 
         # if shim cache was found, iterate through the results
-        if shim_cache_head:
+        for shim_cache_head in shim_cache_heads:
+            if not shim_cache_head or not shim_cache_head.is_valid():
+                continue
+
             debug.debug("Shimcache found at 0x{0:08x}".format(shim_cache_head.obj_offset))
 
             for sequence, shim_entry in enumerate(shim_cache_head.ListEntry.list_of_type("SHIM_CACHE_ENTRY", "ListEntry"), start=1):
-
+                if shim_entry.get_last_modified().v() == 0:
+                    continue
+            
                 if shim_entry.ListEntry.Flink.Blink != shim_entry.ListEntry.Flink.Blink.dereference().obj_offset:
                     debug.warning("Invalid list entry pointer in shimcache entry {0} at 0x{1:08x} (0x{2:08x}); subsequent entries are likely invalid".format(sequence, shim_entry.ListEntry, shim_entry.obj_vm.vtop(shim_entry.obj_offset)))
                     debug.warning(shim_entry)
@@ -1402,3 +1404,4 @@ class ShimCacheMem(common.AbstractWindowsCommand):
                 outfd.write("{}\n".format(delim.join(str(x) for x in row_flds)))
             else:
                 outfd.write(row_fmt.format(*row_flds))
+
