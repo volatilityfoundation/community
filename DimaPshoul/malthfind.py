@@ -10,7 +10,7 @@ import volatility.plugins.modscan as modscan
 import volatility.plugins.malware.malfind as malfind
 import volatility.debug as debug
 import volatility.plugins.malware.threads as threads
-import volatility.plugins.malware.callstacks as callstacks
+import callstacks
 
 # pattern names for the plugins output
 pattern_name_dll_injection = "Dll injection"
