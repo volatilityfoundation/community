@@ -1,0 +1,59 @@
+Name, SQL
+"uri","CREATE TABLE uri (
+                    id INTEGER PRIMARY KEY,
+                    value VARCHAR UNIQUE
+                )"
+"interpretation","CREATE TABLE interpretation (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    value VARCHAR UNIQUE
+                )"
+"manifestation","CREATE TABLE manifestation (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    value VARCHAR UNIQUE
+                )"
+"payload","CREATE TABLE payload
+                    (id INTEGER PRIMARY KEY, value BLOB)"
+"storage","CREATE TABLE storage (
+                    id INTEGER PRIMARY KEY,
+                    value VARCHAR UNIQUE,
+                    state INTEGER,
+                    icon VARCHAR,
+                    display_name VARCHAR
+                )"
+"text","CREATE TABLE text (
+                    id INTEGER PRIMARY KEY,
+                    value VARCHAR UNIQUE
+                )"
+"mimetype","CREATE TABLE mimetype (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    value VARCHAR UNIQUE
+                )"
+"actor","CREATE TABLE actor (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    value VARCHAR UNIQUE
+                )"
+"schema_version","CREATE TABLE schema_version (
+                    schema VARCHAR PRIMARY KEY ON CONFLICT REPLACE,
+                    version INT
+                )"
+"moz_downloads","CREATE TABLE moz_downloads (id INTEGER PRIMARY KEY, name TEXT, source TEXT, target TEXT, tempPath TEXT, startTime INTEGER, endTime INTEGER, state INTEGER, referrer TEXT, entityID TEXT, currBytes INTEGER NOT NULL DEFAULT 0, maxBytes INTEGER NOT NULL DEFAULT -1, mimeType TEXT, preferredApplication TEXT, preferredAction INTEGER NOT NULL DEFAULT 0, autoResume INTEGER NOT NULL DEFAULT 0, guid TEXT)"
+"moz_deleted_logins","CREATE TABLE moz_deleted_logins (id                  INTEGER PRIMARY KEY,guid                TEXT,timeDeleted         INTEGER)"
+"moz_disabledHosts","CREATE TABLE moz_disabledHosts (id                 INTEGER PRIMARY KEY,hostname           TEXT UNIQUE ON CONFLICT REPLACE)"
+"moz_logins","CREATE TABLE moz_logins (id                  INTEGER PRIMARY KEY,hostname            TEXT NOT NULL,httpRealm           TEXT,formSubmitURL       TEXT,usernameField       TEXT NOT NULL,passwordField       TEXT NOT NULL,encryptedUsername   TEXT NOT NULL,encryptedPassword   TEXT NOT NULL,guid                TEXT,encType             INTEGER,timeCreated         INTEGER,timeLastUsed        INTEGER,timePasswordChanged INTEGER,timesUsed           INTEGER)"
+"moz_keywords","CREATE TABLE moz_keywords (  id INTEGER PRIMARY KEY AUTOINCREMENT, keyword TEXT UNIQUE)"
+"moz_bookmarks","CREATE TABLE moz_bookmarks (  id INTEGER PRIMARY KEY, type INTEGER, fk INTEGER DEFAULT NULL, parent INTEGER, position INTEGER, title LONGVARCHAR, keyword_id INTEGER, folder_type TEXT, dateAdded INTEGER, lastModified INTEGER, guid TEXT)"
+"moz_hosts","CREATE TABLE moz_hosts (  id INTEGER PRIMARY KEY, host TEXT NOT NULL UNIQUE, frecency INTEGER, typed INTEGER NOT NULL DEFAULT 0, prefix TEXT)"
+"moz_historyvisits","CREATE TABLE moz_historyvisits (  id INTEGER PRIMARY KEY, from_visit INTEGER, place_id INTEGER, visit_date INTEGER, visit_type INTEGER, session INTEGER)"
+"moz_places","CREATE TABLE moz_places (   id INTEGER PRIMARY KEY, url LONGVARCHAR, title LONGVARCHAR, rev_host LONGVARCHAR, visit_count INTEGER DEFAULT 0, hidden INTEGER DEFAULT 0 NOT NULL, typed INTEGER DEFAULT 0 NOT NULL, favicon_id INTEGER, frecency INTEGER DEFAULT -1 NOT NULL, last_visit_date INTEGER , guid TEXT)"
+"expiration_notify","CREATE TABLE expiration_notify (   id INTEGER PRIMARY KEY , v_id INTEGER , p_id INTEGER , url TEXT NOT NULL , guid TEXT NOT NULL , visit_date INTEGER , expected_results INTEGER NOT NULL )"
+"prefs","CREATE TABLE prefs (id           INTEGER PRIMARY KEY,                    groupID      INTEGER REFERENCES groups(id),                    settingID    INTEGER NOT NULL REFERENCES settings(id),                    value        BLOB)"
+"settings","CREATE TABLE settings (id           INTEGER PRIMARY KEY,                    name         TEXT NOT NULL)"
+"groups","CREATE TABLE groups (id           INTEGER PRIMARY KEY,                    name         TEXT NOT NULL)"
+"webappsstore2","CREATE TABLE webappsstore2 (scope TEXT, key TEXT, value TEXT, secure INTEGER, owner TEXT)"
+"mappings","CREATE TABLE mappings (timestamp INTEGER DEFAULT 0,device TEXT,profile TEXT)"
+"properties","CREATE TABLE properties (device_id TEXT,property TEXT,value TEXT)"
+"devices","CREATE TABLE devices (device_id TEXT PRIMARY KEY,device TEXT)"
+"moz_deleted_formhistory","CREATE TABLE moz_deleted_formhistory (id INTEGER PRIMARY KEY, timeDeleted INTEGER, guid TEXT)"
+"moz_formhistory","CREATE TABLE moz_formhistory (id INTEGER PRIMARY KEY, fieldname TEXT NOT NULL, value TEXT NOT NULL, timesUsed INTEGER, firstUsed INTEGER, lastUsed INTEGER, guid TEXT)"
+"moz_openpages_temp","CREATE TABLE moz_openpages_temp (   url TEXT PRIMARY KEY , open_count INTEGER )"
+"moz_hosts","CREATE TABLE moz_hosts ( id INTEGER PRIMARY KEY,host TEXT,type TEXT,permission INTEGER,expireType INTEGER,expireTime INTEGER,appId INTEGER,isInBrowserElement INTEGER)"

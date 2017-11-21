@@ -1,0 +1,276 @@
+All plugins support x86 and x64 architectures and Glibc version 2.20 - 2.25 (support for 2.26 is work in progress).
+The vtype information for those versions are included in the module, but can also be provided with a file via the --glibc_profile option.
+
+For reliable results (especially regarding MMAPPED chunks and statically linked executables; see also the papers), the mp_ offset should be supplied. The offset for main_arena can/should also be supplied, however the internal algorithms should be able to find it automatically. So in principal, none extra offsets must be supplied.
+
+objdump -t /usr/lib/libc-2.24.so | egrep '\b(mp_|main_arena)\b'
+resp.
+objdump -t statically_linked_executable | egrep '\b(mp_|main_arena)\b'
+
+
+The main analysis plugins are:
+
+- heapinfo: Provides an abstract overview over the number of arenas, chunks and their sizes.
+- heapdump: Dumps all allocated and freed chunks to disk in separate files for further analysis.
+- heapsearch: Searches all chunks for the given string, regex or pointer(s).
+
+The plugin heaprefs, mentioned in the papers, is also still work in progress.
+
+
+Some examples for heapinfo:
+====================================================================================================================================
+python2 /opt/forensic_volatility/vol.py --profile Linuxubuntu-15_10-x64-2016-03-24_19_57_07-profilex64 -f volatility-mem-ubuntu_15.10_heap_64bit.raw linux_heapinfo -p 1702
+
+python2 /opt/forensic_volatility/vol.py --profile Linuxubuntu-15_10-x64-2016-03-24_19_57_07-profilex64 -f volatility-mem-ubuntu_15.10_heap_64bit.raw linux_heapinfo --malloc_par=0x3c41c0 --main_arena=0x3c4c00
+
+python2 /opt/forensic_volatility/vol.py --profile Linuxarch-2016-03-25_02_42_51-profilex86 -f volatility-mem-arch2_2016.03.01_heap_32bit.raw linux_heapinfo -p 264
+
+
+
+Example output:
+---------------------
+
+python2 /opt/forensic_volatility/vol.py --profile Linuxarch-2016-03-25_02_42_51-profilex86 -f volatility-mem-arch2_2016.03.01_heap_32bit.raw linux_heapinfo -p 264 --malloc_par=0x1bc100 --main_arena=0x1bc760
+
+pid    arenas heap_infos non_mmapped_chunks   non_mmapped_chunks_size    mmapped_chunks   mmapped_chunks_size    freed_chunks   freed_chunks_size   
+------ ------ ---------- -------------------- -------------------------- ---------------- ---------------------- -------------- --------------------
+   264      1          0                16788                     724496                0                      0             70                14256
+
+
+
+
+- pid: The PID of the analyzed process.
+- arenas: The amount of discovered malloc state instances. In this case three, which typically means that the process had at least three running threads (including the main thread).
+- heap_infos: The amount of discovered heap info instances. This will be explained in more detail in the next blogpost on this topic.
+- non_mmapped_chunks: The amount of all main and thread heap chunks, excluding MMAPPED chunks. In essence, all chunks from all threads below a certain size boundary (will also be explained in more detail in the next blogpost on this topic).
+- non_mmapped_chunks_size: The summarized size of all main and thread heap chunks (excluding MMAPPED chunks).
+- mmapped_chunks: The amount of all MMAPPED chunks.
+- mmapped_chunks_size: The size of all MMAPPED chunks.
+- freed_chunks: The amount of all freed bin and fastbin chunks, not including top chunks.
+- freed_chunks_size: The size of all freed bin and fastbin chunks, not including top chunks.
+
+
+
+
+
+
+
+
+
+
+heapdump
+====================================================================================================================================
+python2 /opt/forensic_volatility/vol.py --profile Linuxarch-2016-03-25_02_42_51-profilex86 -f volatility-mem-arch2_2016.03.01_heap_32bit.raw linux_heapdump -p 264 --malloc_par=0x1bc100 --main_arena=0x1bc760 -D zsh_dumpdir
+
+
+Example output:
+---------------------
+
+python2 /opt/forensic_volatility/vol.py --profile Linuxarch-2016-03-25_02_42_51-profilex86 -f volatility-mem-arch2_2016.03.01_heap_32bit.raw linux_heapdump -p 264 --malloc_par=0x1bc100 --main_arena=0x1bc760 -D zsh_dumpdir
+
+pid    allocated    freed_bin    freed_fastbin  top_chunks  
+------ ------------ ------------ -------------- ------------
+   264        16788           70              0            1
+
+
+- pid: The PID of the analyzed process.
+- allocated: The amount of all allocated chunks that have been dumped (including main, thread arena, MMAPPED and bottom chunks; see next blogpost).
+- freed_bin: The amount of dumped freed small and large bin chunks.
+- freed_bin: The amount of dumped freed fastbin chunks.
+- top_chunks: The amount of dumped top chunks.
+
+
+The filename format is as follows:
+PID.CHUNK-TYPE_OFFSET_CHUNKSIZE_DUMPEDSIZE_STRIPPED
+
+- PID: The PID of the process. It is useful when dumping multiple processes in the same directory.
+- CHUNK-TYPE: Can be one of the following: allocated-main, allocated-thread, allocated-mmapped, freed-bin, freed-fastbin, top and bottom.
+- OFFSET: The address of the malloc_chunk struct within the virtual address space.
+- CHUNKSIZE: The size taken from the chunk’s size member (no flag bits).
+- DUMPEDSIZE: The amount of bytes that have been dumped into the file. This value can in some cases be zero (most often the case with bottom chunks, but also e.g. with a freed bin chunk and a size of 16; will be explained in the next blogpost), but the file is created anyways to not hide the existence of that chunk from the investigator.
+- STRIPPED: The amount of bytes that have been stripped from the output. This step is necessary to not include heap management data in the dumped files, which can be mistakenly interpreted as user data. Stripping is only done on freed chunk (they contain pointers that override user data).
+
+
+
+
+
+
+
+
+
+heapsearch
+====================================================================================================================================
+
+The heapsearch plugin helps the investigator in identifying a chunk of interest. This can e.g. be done by searching for a specific string or pointer, which is expected to be contained in a chunk. When a match is found, the according malloc_chunk struct is printed, including its virtual address. The supported command line options are:
+
+- pointer: Prints chunks that contain exactly the given pointer(s). The pointer(s) can be given as (hexa)decimal numbers.
+- yara_rule: Searches all chunks with the given yara rule and prints all hits.
+- string: Searches all chunks for the given string and prints all hits.
+- chunk_address: Expects address(es) belonging to a chunk(s) of interest and prints all chunks having a pointer somewhere into the data part of that chunk(s).
+- search_struct: Includes the malloc_struct fields in the search process, which means the size field for all chunks and prev_size, fd, bk, fd_nextsize and bk_nextsize for bin chunks. This is normally not desired and hence deactivated by default.
+
+
+An example scenario for the chunk_addresses option: We identified a chunk of interest and want to know, which chunks contain a pointer/reference somewhere to that chunk. The algorithm expects at least one chunk of interest and searches the whole data part of all chunks (includes the chunk of interest) for a pointer somewhere to the chunk of interest.
+
++--------------------+      +--------------------+
+|                    |      |                    |
+| chunk with pointer---------> chunk of interest |
+|                    |      |         ^          |
++--------------------+      +---------|----------+
+                                      |
+                       +--------------|-----+
+                       |              |     |
+                       | chunk with pointer |
+                       |                    |
+                       +--------------------+
+
+
+
+# The first command searches for a chunk containing the string 'command_test' for the zsh process (which was a command executed)
+-------------------------------------------------------
+python2 /opt/forensic_volatility/vol.py --profile Linuxarch-2016-03-25_02_42_51-profilex86 -f volatility-mem-arch2_2016.03.01_heap_32bit.raw linux_heapsearch -p 264 --malloc_par=0x1bc100 --main_arena=0x1bc760 --string command_test 
+
+================== Search results ==================
+
+The chunk (0x86D7F30) below contains:
+
+The following needle at the given offset(s):
+Needle     Offset(s)
+----------------------
+command_test: 0x86D7F38
+
+
+
+[malloc_chunk malloc_chunk] @ 0x086D7F30
+ bk_nextsize -
+ 1667391839
+ prev_size -
+ 0
+ fd_nextsize -
+ 1953719668
+ bk -
+ 1600417377
+ fd -
+ 1835888483
+ size -
+ 25
+
+
+============================================================
+
+
+
+# The next command searches for chunks with pointers to the chunk containing the string 'command_test'
+-------------------------------------------------------
+
+python2 /opt/forensic_volatility/vol.py --profile Linuxarch-2016-03-25_02_42_51-profilex86 -f volatility-mem-arch2_2016.03.01_heap_32bit.raw linux_heapsearch -p 264 --malloc_par=0x1bc100 --main_arena=0x1bc760 --chunk_address 0x086D7F30
+
+
+We found the following chunks for the given chunk_addresses (all other chunks will now be searched for pointers to them): 
+
+[malloc_chunk malloc_chunk] @ 0x086D7F30
+ bk_nextsize -
+ 1667391839
+ prev_size -
+ 0
+ fd_nextsize -
+ 1953719668
+ bk -
+ 1600417377
+ fd -
+ 1835888483
+ size -
+ 25
+
+
+================== Search results ==================
+
+The chunk (0x86D7EF8) below contains:
+
+The following pointers at the given offset(s) to the chunk at offset 0x86D7F30:
+Pointer    Offset(s)
+----------------------
+0x86D7F38: 0x86D7F04
+
+
+
+[malloc_chunk malloc_chunk] @ 0x086D7EF8
+ bk_nextsize -
+ 141393576
+ prev_size -
+ 141389008
+ fd_nextsize -
+ 6
+ bk -
+ 141393720
+ fd -
+ 0
+ size -
+ 57
+
+
+============================================================
+
+
+
+
+# This command uses the --yara_rule option to search for string in the keepassx process
+python2 /opt/forensic_volatility/vol.py --profile Linuxubuntu-15_10-x64-2016-03-24_19_57_07-profilex64 -f volatility-mem-ubuntu_15.10_heap_64bit.raw linux_heapsearch -p 1702 --malloc_par=0x3c41c0 --main_arena=0x3c4c00 --yara_rule '"yyyyyyyy_url13_AAAAAAAAB" wide'
+
+
+
+
+
+
+
+
+
+
+zsh
+====================================================================================================================================
+
+python2 /opt/forensic_volatility/vol.py --profile Linuxarch-2016-03-25_02_42_51-profilex86 -f volatility-mem-arch2_2016.03.01_heap_32bit.raw linux_zsh -p 264 --malloc_par=0x1bc100 --main_arena=0x1bc760
+
+pid    counter started                ended                  command
+------ ------- ---------------------- ---------------------- -------
+   264       1 2017-09-30 20:11:07    2017-09-30 20:11:07    'reboot'
+   264       2 2017-09-30 20:11:28    2017-09-30 20:11:28    'history 0'
+   264       3 2017-09-30 20:11:33    2017-09-30 20:11:33    'echo hello from the zsh'
+   264       4 2017-09-30 20:11:37    2017-09-30 20:11:37    'date'
+   264       5 2017-09-30 20:11:42    2017-09-30 20:11:42    'command_test_abc'
+   264       6 2017-09-30 20:11:47    2017-09-30 20:11:47    'shutdown -Ph now'
+
+
+
+
+
+
+
+
+
+keepassx
+====================================================================================================================================
+
+python2 /opt/forensic_volatility/vol.py --profile Linuxubuntu-15_10-x64-2016-03-24_19_57_07-profilex64 -f volatility-mem-ubuntu_15.10_heap_64bit.raw linux_keepassx -p 1702 --malloc_par=0x3c41c0 --main_arena=0x3c4c00
+
+
+pid    entry title url username comment
+------ ----- ----- --- -------- -------
+  1702 1 u'yyyyyyyy_title8_AAAAAAAAB' u'yyyyyyyy_url8_AAAAAAAAB' u'yyyyyyyy_user8_AAAAAAAAB' u'yyyyyyyy_comment8_AAAAAAAAB'
+  1702 2 u'yyyyyyyy_title12_AAAAAAAAB' u'yyyyyyyy_url12_AAAAAAAAB' u'yyyyyyyy_user12_AAAAAAAAB' u'yyyyyyyy_comment12_AAAAAAAAB'
+  1702 3 u'yyyyyyyy_title14_AAAAAAAAB' u'yyyyyyyy_url14_AAAAAAAAB' u'yyyyyyyy_user14_AAAAAAAAB' u'yyyyyyyy_comment14_AAAAAAAAB'
+  1702 4 u'yyyyyyyy_title7_AAAAAAAAB' u'yyyyyyyy_url7_AAAAAAAAB' u'yyyyyyyy_user7_AAAAAAAAB' u'yyyyyyyy_comment7_AAAAAAAAB'
+  1702 5 u'yyyyyyyy_title1_AAAAAAAAB' u'yyyyyyyy_url1_AAAAAAAAB' u'yyyyyyyy_user1_AAAAAAAAB' u'yyyyyyyy_comment1_AAAAAAAAB'
+  1702 6 u'' u'' u'' u''
+  1702 7 u'yyyyyyyy_title11_AAAAAAAAB' u'yyyyyyyy_url11_AAAAAAAAB' u'yyyyyyyy_user11_AAAAAAAAB' u'yyyyyyyy_comment11_AAAAAAAAB'
+  1702 8 u'' u'' u'' u''
+  1702 9 u'yyyyyyyy_title10_AAAAAAAAB' u'yyyyyyyy_url10_AAAAAAAAB' u'yyyyyyyy_user10_AAAAAAAAB' u'yyyyyyyy_comment10_AAAAAAAAB'
+  1702 10 u'yyyyyyyy_title4_AAAAAAAAB' u'yyyyyyyy_url4_AAAAAAAAB' u'yyyyyyyy_user4_AAAAAAAAB' u'yyyyyyyy_comment4_AAAAAAAAB'
+  1702 11 u'yyyyyyyy_title3_AAAAAAAAB' u'yyyyyyyy_url3_AAAAAAAAB' u'yyyyyyyy_user3_AAAAAAAAB' u'yyyyyyyy_comment3_AAAAAAAAB'
+  1702 12 u'yyyyyyyy_title13_AAAAAAAAB' u'yyyyyyyy_url13_AAAAAAAAB' u'yyyyyyyy_user13_AAAAAAAAB' u'yyyyyyyy_comment13_AAAAAAAAB'
+  1702 13 u'yyyyyyyy_title9_AAAAAAAAB' u'yyyyyyyy_url9_AAAAAAAAB' u'yyyyyyyy_user9_AAAAAAAAB' u'yyyyyyyy_comment9_AAAAAAAAB'
+  1702 14 u'yyyyyyyy_title2_AAAAAAAAB' u'yyyyyyyy_url2_AAAAAAAAB' u'yyyyyyyy_user2_AAAAAAAAB' u'yyyyyyyy_comment2_AAAAAAAAB'
+  1702 15 u'yyyyyyyy_title5_AAAAAAAAB' u'yyyyyyyy_url5_AAAAAAAAB' u'yyyyyyyy_user5_AAAAAAAAB' u'yyyyyyyy_comment5_AAAAAAAAB'
+  1702 16 u'yyyyyyyy_title6_AAAAAAAAB' u'yyyyyyyy_url6_AAAAAAAAB' u'yyyyyyyy_user6_AAAAAAAAB' u'yyyyyyyy_comment6_AAAAAAAAB'
+  1702 17 u'' u'' u'' u''
+

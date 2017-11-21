@@ -1,0 +1,46 @@
+
+Bugs:
+    "yara.Error: internal error: 30" - This happens when there are more than 1000000 matches in a block.
+        I plan on making a match function that catches error 30 and splits the buffer into two until the error doesn't happen.
+
+Features:
+    Allow custom needles in PREDEFINED_TABLES.
+    Automatically find table schemas:
+        No arguments to sqlitefind will do 2 passes: find all table definitions, then find all matching table rows.
+        -t <table name> argument finds the table definition for <table name> and searches for that.
+        Needle sizes smaller than 2 are not used.
+            print 'Ignoring table "{}" with needle size {}. Use --min-needle-size <n> to enable smaller needles.'
+            Option --min-needle-size <n>
+    PREDEFINED_TABLES for:
+        firefox
+        google chrome
+    Option to input sql schema instead of schema string.
+
+Documentation:
+    Describe table schema schemes more completely
+    More of how it works
+
+Optimization:
+    Allow RowSearch to search for more than one table at once.
+
+Correctness:
+    String encodings?
+    What happens when the header contains a negative varint?
+
+Sqlite Tools Features:
+    Forwards varint counting
+    Encoding multibyte varints
+    Encoding negative varints
+    Allow RowSearch on plain buffer
+    Make yara/volatility optional imports
+
+SQL Parsing Types:
+    varchar(%d)
+    timestamp
+    datetime
+    FOREIGN KEY (<name>) REFERENCES <table>(<field>, ...)
+    CONSTRAINT <name> UNIQUE (<field>, ...)
+    PRIMARY KEY (<field>, ...)
+    Tables without any types:
+        CREATE TABLE sqlite_sequence (name, seq);
+        CREATE TABLE sqlite_stat1 (tbl1, idx, stat);
