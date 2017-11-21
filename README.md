@@ -26,6 +26,8 @@ frameworks
 
 Researchers and developers in the community have also created frameworks that build on top of Volatility. These aren't necessarily Volatility plugins (that you would import with --plugins) and usually they contain additional modules, configurations, and components. For that reason, we don't feature those frameworks in this repository, but we'd still like to reference them: 
 
+* [Autopsy Plugins](https://github.com/markmckinnon/Autopsy-Plugins/tree/master/Volatility) by Mark McKinnon
+* [PyREBox](https://github.com/Cisco-Talos/pyrebox) by Xabier Ugarte-Pedrero at Cisco Talos
 * [Cuckoo Sandbox](https://github.com/cuckoobox/cuckoo) uses Volatility for its Memory module
 * [VolDiff](https://github.com/aim4r/VolDiff) Malware Memory Footprint Analysis by @aim4r
 * [Evolve](https://github.com/JamesHabben/evolve) Web interface for the Volatility Memory Forensics Framework by James Habben
