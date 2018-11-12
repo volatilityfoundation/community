@@ -160,7 +160,7 @@ class ThreadFindings(object):
                 else:
                     mode = distorm3.Decode32Bits
 
-                disassemble_code += "\n\t".join(["{0:<#010x} {1:<16} {2}".format(o, h, i) \
+                disassemble_code += "\n\t".join(["{0:#010x} {1:<16} {2}".format(o, h, i) \
                                               for o, _size, i, h in \
                                               distorm3.DecodeGenerator(entry_point, content, mode)])
 
