@@ -480,55 +480,7 @@ class driverbl(common.AbstractWindowsCommand):
         addr_space = utils.load_as(self._config)
         drv_scan = DriverScan(self._config)
         
-        if volatility.constants.VERSION != "2.4":
-            for obj, drv, ext  in drv_scan.calculate():
-                if ext.ServiceKeyName != None:
-                    service_key_name = str(ext.ServiceKeyName).lower()
-                else:
-                    service_key_name = None
-                
-                if obj.NameInfo.Name != None:
-                    name = str(obj.NameInfo.Name).lower()
-                else:
-                    name = None
-                
-                if drv.DriverName != None:
-                    driver_name = str(drv.DriverName).lower()
-                else:
-                    driver_name = None
-                
-                if drv.DriverSize != None:
-                    driver_size = drv.DriverSize
-                else:
-                    driver_size = None
-                
-                if drv.DriverStart != None:
-                    driver_start = drv.DriverStart
-                else:
-                    driver_start = None
-                
-                mods = dict((addr_space.address_mask(mod.DllBase), mod) for mod in lsmod(addr_space))
-                mod_addrs = sorted(mods.keys())
-                
-                IRPs = {}
-                for i, function in enumerate(drv.MajorFunction):
-                    function = drv.MajorFunction[i]
-                    module = tasks.find_module(mods, mod_addrs, addr_space.address_mask(function))
-                    if module:
-                        module_name = str(module.BaseDllName or '').lower()
-                    else:
-                        module_name = "unknown"
-                    IRPs[MAJOR_FUNCTIONS[i]] = module_name               
-                
-                self.baseline_drv_list.append({
-                                                'service_key_name': service_key_name,
-                                                'name': name,
-                                                'driver_name': driver_name,
-                                                'driver_size': driver_size,
-                                                'driver_start': driver_start,
-                                                'irps': IRPs
-                                            })
-        else:
+	if volatility.constants.VERSION == "2.6" or volatility.constants.VERSION == "2.4":
             for driver in drv_scan.calculate():
                 header = driver.get_object_header()
                 if driver.DriverExtension.ServiceKeyName != None:
@@ -577,6 +529,56 @@ class driverbl(common.AbstractWindowsCommand):
                                                 'driver_start': driver_start,
                                                 'irps': IRPs
                                             })
+
+        else:
+            for obj, drv, ext  in drv_scan.calculate():
+                if ext.ServiceKeyName != None:
+                    service_key_name = str(ext.ServiceKeyName).lower()
+                else:
+                    service_key_name = None
+                
+                if obj.NameInfo.Name != None:
+                    name = str(obj.NameInfo.Name).lower()
+                else:
+                    name = None
+                
+                if drv.DriverName != None:
+                    driver_name = str(drv.DriverName).lower()
+                else:
+                    driver_name = None
+                
+                if drv.DriverSize != None:
+                    driver_size = drv.DriverSize
+                else:
+                    driver_size = None
+                
+                if drv.DriverStart != None:
+                    driver_start = drv.DriverStart
+                else:
+                    driver_start = None
+                
+                mods = dict((addr_space.address_mask(mod.DllBase), mod) for mod in lsmod(addr_space))
+                mod_addrs = sorted(mods.keys())
+                
+                IRPs = {}
+                for i, function in enumerate(drv.MajorFunction):
+                    function = drv.MajorFunction[i]
+                    module = tasks.find_module(mods, mod_addrs, addr_space.address_mask(function))
+                    if module:
+                        module_name = str(module.BaseDllName or '').lower()
+                    else:
+                        module_name = "unknown"
+                    IRPs[MAJOR_FUNCTIONS[i]] = module_name               
+                
+                self.baseline_drv_list.append({
+                                                'service_key_name': service_key_name,
+                                                'name': name,
+                                                'driver_name': driver_name,
+                                                'driver_size': driver_size,
+                                                'driver_start': driver_start,
+                                                'irps': IRPs
+                                            })
+
         
         # Instantiating Modules plugin
         for m in lsmod(addr_space):
@@ -616,58 +618,8 @@ class driverbl(common.AbstractWindowsCommand):
         # Instantiating DriverScan plugin
         addr_space = utils.load_as(self._config)
         drv_scan = DriverScan(self._config)
-        if volatility.constants.VERSION != "2.4":
-            for obj, drv, ext  in drv_scan.calculate():
-                if ext.ServiceKeyName != None:
-                    service_key_name = str(ext.ServiceKeyName).lower()
-                else:
-                    service_key_name = None
-                
-                if obj.NameInfo.Name != None:
-                    name = str(obj.NameInfo.Name).lower()
-                else:
-                    name = None
-                
-                if drv.DriverName != None:
-                    driver_name = str(drv.DriverName).lower()
-                else:
-                    driver_name = None
-                
-                if drv.DriverSize != None:
-                    driver_size = drv.DriverSize
-                else:
-                    driver_size = None
-                
-                if drv.DriverStart != None:
-                    driver_start = drv.DriverStart
-                else:
-                    driver_start = None
-                
-                mods = dict((addr_space.address_mask(mod.DllBase), mod) for mod in lsmod(addr_space))
-                mod_addrs = sorted(mods.keys())
-                
-                IRPs = {}
-                for i, function in enumerate(drv.MajorFunction):
-                    function = drv.MajorFunction[i]
-                    module = tasks.find_module(mods, mod_addrs, addr_space.address_mask(function))
-                    if module:
-                        module_name = str(module.BaseDllName or '').lower()
-                    else:
-                        module_name = "unknown"
-                    IRPs[MAJOR_FUNCTIONS[i]] = module_name
-                
-                self.image_drv_list.append({
-                                                'service_key_name': service_key_name,
-                                                'name': name,
-                                                'driver_name': driver_name,
-                                                'driver_size': driver_size,
-                                                'driver_start': driver_start,
-                                                'irps': IRPs,
-                                                'obj': obj,
-                                                'drv': drv,
-                                                'ext': ext
-                                            })
-        else:
+        
+	if volatility.constants.VERSION == "2.6" or volatility.constants.VERSION == "2.4":
             for driver in drv_scan.calculate():
                 header = driver.get_object_header()
                 if driver.DriverExtension.ServiceKeyName != None:
@@ -719,7 +671,59 @@ class driverbl(common.AbstractWindowsCommand):
                                                 'drv': driver,
                                                 'ext': driver.DriverExtension
                                             })
-        
+        	
+	else:
+            for obj, drv, ext  in drv_scan.calculate():
+                if ext.ServiceKeyName != None:
+                    service_key_name = str(ext.ServiceKeyName).lower()
+                else:
+                    service_key_name = None
+                
+                if obj.NameInfo.Name != None:
+                    name = str(obj.NameInfo.Name).lower()
+                else:
+                    name = None
+                
+                if drv.DriverName != None:
+                    driver_name = str(drv.DriverName).lower()
+                else:
+                    driver_name = None
+                
+                if drv.DriverSize != None:
+                    driver_size = drv.DriverSize
+                else:
+                    driver_size = None
+                
+                if drv.DriverStart != None:
+                    driver_start = drv.DriverStart
+                else:
+                    driver_start = None
+                
+                mods = dict((addr_space.address_mask(mod.DllBase), mod) for mod in lsmod(addr_space))
+                mod_addrs = sorted(mods.keys())
+                
+                IRPs = {}
+                for i, function in enumerate(drv.MajorFunction):
+                    function = drv.MajorFunction[i]
+                    module = tasks.find_module(mods, mod_addrs, addr_space.address_mask(function))
+                    if module:
+                        module_name = str(module.BaseDllName or '').lower()
+                    else:
+                        module_name = "unknown"
+                    IRPs[MAJOR_FUNCTIONS[i]] = module_name
+                
+                self.image_drv_list.append({
+                                                'service_key_name': service_key_name,
+                                                'name': name,
+                                                'driver_name': driver_name,
+                                                'driver_size': driver_size,
+                                                'driver_start': driver_start,
+                                                'irps': IRPs,
+                                                'obj': obj,
+                                                'drv': drv,
+                                                'ext': ext
+                                            })
+	
         for m in lsmod(addr_space):
             self.image_mod_list.append({
                                             'full_dll_name': str(m.FullDllName).lower(),
@@ -823,9 +827,10 @@ class driverbl(common.AbstractWindowsCommand):
                                   ('Path', '')
                                   ])
 
+
         for object_obj, driver_obj, extension_obj, known, d_name, drv_name, drv_mod, drv_size, drv_path, drv_irp, drv_irps, drv_bl_irps in data:
 
-            self.table_row(outfd,
+		self.table_row(outfd,
                          driver_obj.obj_offset,
                          str(extension_obj.ServiceKeyName or ''),
                          str(known),
@@ -835,7 +840,7 @@ class driverbl(common.AbstractWindowsCommand):
                          str(drv_size),
                          str(drv_irp),
                          str(drv_path)
-                         )
+		)
 ##########################################################################################
 # SERVICEBL PLUGIN
 ##########################################################################################
