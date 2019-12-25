@@ -1489,6 +1489,46 @@ class malprocfind(common.AbstractWindowsCommand):
         for pid in list_wo_parent:
             print "PID %d Offset: 0x%x Name: %s" % (int(list_wo_parent[pid].UniqueProcessId), int(list_wo_parent[pid].obj_offset), str(list_wo_parent[pid].ImageFileName))
         
+	
+	#Unified output
+	
+	
+    def unified_output (self, data):
+        return TreeGrid ([
+            ("ProcessName", str),
+            ("PId", int),
+            ("Parent", str),
+            ("Name", str),
+            ("Path", str),
+            ("Priority", str),
+            ("CmdLine", str),
+            ("User", str),
+            ("Session", str),
+            ("Time", str),
+            ("Cmd", str),
+            ("PHollow", str),
+            ("Spath", str)],
+            self.generator(data))
+    
+    
+    def generator (self, data):
+        for p in data:
+            yield (0,[
+                str(p['procname']),
+                int(p['pid']),
+                str(p['parent']),
+                str(p['name']),
+                str(p['path']),
+                str(p['priority']),
+                str(p['cmdline']),
+                str(p['user']),
+                str(p['session']),
+                str(p['time']),
+                str(p['cmd']),
+                str(p['phollow']),
+                str(p['spath'])
+                ])
+
         
     
     def render_text(self, outfd, data):
