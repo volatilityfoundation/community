@@ -9,6 +9,9 @@ import volatility.scan as scan
 import volatility.utils as utils
 import volatility.win32.tasks as tasks
 
+from volatility.renderers import TreeGrid
+from volatility.renderers.basic import Address, Hex
+
 
 # Add some structures
 _packet_types = {
@@ -632,3 +635,35 @@ class NDISPktScan(common.AbstractWindowsCommand):
                             dsts_file.write(dst + '\n')
                     outfd.write('Written {:,} destination IPs to \'{}\'.\n'.format(
                         len(dsts), self._config.DSTS))
+
+    def unified_output(self, data):
+		if self._config.SLACK:
+			return TreeGrid([("Offset (V)", Address),
+							 ("Slack Data", str),],
+							self.generator(data))
+		else:
+			return TreeGrid([("Offset (V)", Address),
+							 ("Source MAC", str),
+							 ("Destination MAC", str),
+							 ("Prot", str),
+							 ("Source IP", str),
+							 ("Destination IP", str),
+							 ("SPort", str),
+							 ("DPort", str),
+							 ("Flags", str)],
+							self.generator(data))
+	
+    def generator(self, data):
+		if self._config.SLACK:
+			for offset, slack in data:
+				better_slack = self.tidy_slack(slack)
+				if len(better_slack) > 1:
+					yield(0, [Address(offset), str(better_slack)])
+		else:
+			dsts = set()
+			for raw, eth, epl, pl in data:
+				dst_ip = epl.make_ip(epl.dst_ip)
+				dsts.add(dst_ip)
+				src_mac = eth.make_mac(eth.mac_src)
+
+				yield (0, [Address(eth.v()), str(src_mac), str(eth.make_mac(eth.mac_dst)), str('{:#04x}'.format(epl.get_proto())), str(epl.make_ip(epl.src_ip)), str(dst_ip), str(pl.src_port if pl else 'Proto'), str(pl.dst_port if pl else 'NotKn'), str(pl.get_flags() if pl else 'own')])
