@@ -53,5 +53,7 @@ I really believe that memory forensics on Linux will be "the next big thing" in 
 
 ### References
 [1] https://www.usenix.org/system/files/sec19-pagani.pdf
+
 [2] https://github.com/emdel/ksfinder
+
 [3] https://github.com/psviderski/volatility-android/blob/master/volatility/plugins/linux/auto_ksymbol.py
