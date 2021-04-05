@@ -504,6 +504,36 @@ class ZeusScan2(procdump.ProcDump):
 
             self.render_extra(outfd, task, vad, params)
 
+#--------------------------------------------------------------------------------
+# Scanner for Zeus derivative Ice9/IceIX, which uses a different RC4 crypt routine     
+#--------------------------------------------------------------------------------
+
+class Ice9Scan(ZeusScan2):
+    """Locate and decrypt Ice9 Configs"""
+
+    def rc4(self, key, encoded):
+        """Perform a IceIX RC4 operation"""
+        # Turn the buffers into lists so the elements are mutable
+        key_copy = [ord(c) for c in key]
+        enc_copy = [ord(c) for c in encoded]
+        # Start with the last two bytes in the key
+        var1 = key_copy[0x100]
+        var2 = key_copy[0x101]
+        # Do the RC4 algorithm
+        for i in range(0, len(enc_copy)):
+            var1 += 3
+            a = var1 & 0xFF
+            b = key_copy[a]
+            var2 += (b + 7)
+            var2 &= 0xFF
+            key_copy[a]  = key_copy[var2]
+            key_copy[var2] = b
+            enc_copy[i] ^= key_copy[(key_copy[a] + b) & 0xFF]
+        # Return the decoded bytes as a string
+        decoded = [chr(c) for c in enc_copy]
+        return ''.join(decoded)
+
+
 class CitadelScan1345(ZeusScan2):
     """Locate and Decrypt Citadel 1.3.4.5 Configs"""
 
