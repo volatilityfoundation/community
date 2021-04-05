@@ -505,7 +505,7 @@ class ZeusScan2(procdump.ProcDump):
             self.render_extra(outfd, task, vad, params)
 
 #--------------------------------------------------------------------------------
-# Scanner for Zeus derivative Ice9/IceIX, which uses a different RC4 crypt routine     
+# Scanner for Zeus derivative Ice9/IceIX, which uses a different RC4 crypt routine
 #--------------------------------------------------------------------------------
 
 class Ice9Scan(ZeusScan2):
